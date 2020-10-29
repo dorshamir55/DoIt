@@ -1,5 +1,6 @@
 package com.example.doit.ui;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import com.example.doit.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+//import com.example.doit.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(menuItem -> {
-            //logout();
+            logout();
             return false;
         });
 
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        /*auth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         authStateListener = firebaseAuth -> { // onAuthChanged..
             // if signed-out
             if(firebaseAuth.getCurrentUser() == null) {
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         welcomeTV.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Check if FCM token was re-generated but the user auth uid couldn't be granted..
-        String newToken = PreferenceManager.getDefaultSharedPreferences(this)
+        /*String newToken = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString(MyFirebaseMessagingService.SP_TOKEN_KEY, null);
 
         if(newToken != null) {
@@ -83,7 +86,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.sign_out_title)
+                .setMessage(R.string.sign_out_message)
+                //.setIcon(R.mipmap.icon)
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
+                    FirebaseAuth.getInstance().signOut();
+                })
+                .setNegativeButton(getString(R.string.no), null)
+                .create()
+                .show();
     }
 
     @Override
@@ -91,5 +103,18 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(authStateListener != null)
+            auth.removeAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        auth.addAuthStateListener(authStateListener);
     }
 }

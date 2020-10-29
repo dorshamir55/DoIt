@@ -8,4 +8,18 @@
     <string name="welcome">שלום,</string>
     <string name="menu_my_profile">הפרופיל שלי</string>
     <string name="do_it">Do it!</string>
+    <string name="login">התחבר</string>
+    <string name="prompt_email">מייל</string>
+    <string name="prompt_password">סיסמה</string>
+    <string name="action_sign_in">התחבר</string>
+    <string name="action_sign_up">הירשם</string>
+    <string name="signup_text">אין לך משתמש? לחץ כאן להרשמה</string>
+    <string name="wrong_credentials">שם משתמש או סיסמה אינם נכונים</string>
+    <string name="prompt_repeat_password">סיסמה שנית</string>
+    <string name="signup_details_error">שגיאה: סיסמה צריכה להכיל 6–12 תווים</string>
+    <string name="signup_failed">לא מצליח להתחבר, נסה שנית מאוחר יותר</string>
+    <string name="sign_out_message">האם אתה בטוח שאתה רוצה להתנתק?</string>
+    <string name="sign_out_title">להתנתק?</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
 </resources>

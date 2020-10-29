@@ -27,8 +27,11 @@ public class OpeningScreenActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         handler.postDelayed(() -> {
-            startActivity(new Intent(OpeningScreenActivity.this, MainActivity.class));
+            if(auth.getCurrentUser() != null)
+                startActivity(new Intent(OpeningScreenActivity.this, MainActivity.class));
+            else
+                startActivity(new Intent(OpeningScreenActivity.this, SignInUpActivity.class));
             finish();
-        }, 3000);
+        }, 2000);
     }
 }

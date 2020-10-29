@@ -7,4 +7,18 @@
     <string name="welcome">Welcome,</string>
     <string name="menu_my_profile">My profile</string>
     <string name="do_it">Do it!</string>
+    <string name="login">Login</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_up">Sign up</string>
+    <string name="signup_text">Not a member? click here to sign-up</string>
+    <string name="wrong_credentials">Wrong email or password</string>
+    <string name="prompt_repeat_password">Repeat password</string>
+    <string name="signup_details_error">Error: Password length must be 6 to 12 characters, display name         must contain only letters and digits, email address must be valid.</string>
+    <string name="signup_failed">Could not Sign-up, Please try again later</string>
+    <string name="sign_out_title">Sign out?</string>
+    <string name="sign_out_message">Are you sure you want to sign out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
