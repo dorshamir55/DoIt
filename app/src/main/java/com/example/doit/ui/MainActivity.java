@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,11 +16,20 @@ import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.doit.R;
+import com.example.doit.model.Answer;
+import com.example.doit.model.Question;
+import com.example.doit.model.QuestionPostData;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.type.DateTime;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Question question = new Question(1, "How are you?? :)");
+        ArrayList<Answer> answers = new ArrayList<>();
+        answers.add(new Answer(1, "I'm fine Thank you"));
+        postQuestion(new QuestionPostData("1", question,  answers, Calendar.getInstance().getTime(), false));
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -96,6 +112,29 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.no), null)
                 .create()
                 .show();
+    }
+
+    private void postQuestion(QuestionPostData adData) {
+        FirebaseFirestore.getInstance().collection("posts").document()
+                .set(adData)
+                .addOnSuccessListener(docRef -> {
+                    LocalBroadcastManager.getInstance(getApplicationContext())
+                            .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
+                    //stopSelf();
+                })
+                .addOnFailureListener(ex -> {
+                    ex.printStackTrace();
+                    showMessageAndFinish("Something wrong");
+                });
+    }
+
+    private void showMessageAndFinish(String msg) {
+        try {
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            //stopSelf();
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     @Override

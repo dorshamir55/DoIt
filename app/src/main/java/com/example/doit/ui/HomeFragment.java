@@ -39,7 +39,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private IMainViewModel viewModel;
+    private IMainViewModel viewModel = null;
     private SwipeRefreshLayout swipeContainer;
     private PostsRecyclerAdapter adapter = new PostsRecyclerAdapter();
     private BroadcastReceiver reloadAdsReceiver;
@@ -152,7 +152,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
         if(getContext() != null) {
             LocalBroadcastManager.getInstance(getContext()).registerReceiver(reloadAdsReceiver,
-                    new IntentFilter("com.hit.project.ACTION_RELOAD"));
+                    new IntentFilter("com.project.ACTION_RELOAD"));
         }
     }
 

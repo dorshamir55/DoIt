@@ -24,11 +24,11 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
 
     @Override
     public LiveData<List<QuestionPostData>> getPostsLiveData() {
-        return null;
+        return questionPostLiveData;
     }
 
     @Override
     public void loadAds(Runnable onFinish) {
-
+        mainRepository.loadAds(onFinish);
     }
 }

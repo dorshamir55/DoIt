@@ -12,6 +12,7 @@ import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,14 +31,17 @@ public class QuestionPostData {
     private Question question;
 
     @Embedded
-    private List<Answer> answers;
+    private ArrayList<Answer> answers;
 
     @ServerTimestamp
     private Date updateDate;  // update (also created) date - from Firebase
 
     private boolean isRemoved;
 
-    public QuestionPostData(String postedUserId, Question question, List<Answer> answers, Date updateDate, boolean isRemoved) {
+    public QuestionPostData() {
+    }
+
+    public QuestionPostData(String postedUserId, Question question, ArrayList<Answer> answers, Date updateDate, boolean isRemoved) {
         this.postedUserId = postedUserId;
         this.question = question;
         this.answers = answers;
@@ -76,11 +80,11 @@ public class QuestionPostData {
         this.question = question;
     }
 
-    public List<Answer> getAnswers() {
+    public ArrayList<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(ArrayList<Answer> answers) {
         this.answers = answers;
     }
 
