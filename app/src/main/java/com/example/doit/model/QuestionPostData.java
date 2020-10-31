@@ -8,6 +8,7 @@ import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 import com.example.doit.db.Converters;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -30,8 +31,7 @@ public class QuestionPostData {
     @Embedded
     private Question question;
 
-    @Embedded
-    private ArrayList<Answer> answers = new ArrayList<>();
+    private List<Answer> answers = null;
 
     @ServerTimestamp
     private Date updateDate;  // update (also created) date - from Firebase
@@ -41,12 +41,12 @@ public class QuestionPostData {
     public QuestionPostData() {
     }
 
-    public QuestionPostData(String postedUserId, Question question, ArrayList<Answer> answers, Date updateDate, boolean isRemoved) {
+    public QuestionPostData(String postedUserId, Question question, List<Answer> answers, Date updateDate) {
         this.postedUserId = postedUserId;
         this.question = question;
         this.answers = answers;
         this.updateDate = updateDate;
-        this.isRemoved = isRemoved;
+        this.isRemoved = false;
     }
 
     public <T extends QuestionPostData> T withId(String id) {
@@ -80,11 +80,11 @@ public class QuestionPostData {
         this.question = question;
     }
 
-    public ArrayList<Answer> getAnswers() {
+    public List<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(ArrayList<Answer> answers) {
+    public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 
@@ -96,11 +96,11 @@ public class QuestionPostData {
         this.updateDate = updateDate;
     }
 
-    public boolean getIsRemoved() {
+    public boolean isRemoved() {
         return isRemoved;
     }
 
-    public void setIsRemoved(boolean isRemoved) {
-        isRemoved = isRemoved;
+    public void setRemoved(boolean removed) {
+        isRemoved = removed;
     }
 }

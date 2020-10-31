@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Question question = new Question("2", "What is your favorite color?");
+//        Question question = new Question("2", "What is it your favorite color?");
 //        ArrayList<Answer> answers = new ArrayList<>();
-//        answers.add(new Answer("5", "Red"));
-//        answers.add(new Answer("6", "Blue"));
-//        answers.add(new Answer("7", "Green"));
-//        answers.add(new Answer("8", "Yellow"));
-//        postQuestion(new QuestionPostData("1", question,  answers, Calendar.getInstance().getTime(), false));
+//        answers.add(new Answer("1", "Red"));
+//        answers.add(new Answer("2", "Blue"));
+//        answers.add(new Answer("3", "Green"));
+//        answers.add(new Answer("4", "Yellow"));
+//        postQuestion(new QuestionPostData("22", question,  answers, Calendar.getInstance().getTime()));
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);

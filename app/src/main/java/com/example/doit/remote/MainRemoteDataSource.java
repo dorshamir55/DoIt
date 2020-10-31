@@ -2,6 +2,7 @@ package com.example.doit.remote;
 
 import com.example.doit.model.Answer;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.Question;
 import com.example.doit.model.QuestionPostData;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,15 +35,15 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
 
         query.get()
                 .addOnCompleteListener(task -> {
-                    ArrayList<QuestionPostData> data = null;
+                    List<QuestionPostData> data = null;
                     if (task.isSuccessful()) {
                         data = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult().getDocuments()) {
                             //ArrayList<Answer> answers = new ArrayList<>();
-                            ArrayList<Answer> answers = (ArrayList<Answer>) document.get("answers");
+                            //ArrayList<Answer> answers = (ArrayList<Answer>) document.get("answers");
                             //Log.d(TAG, list.toString());
                             data.add(document.toObject(QuestionPostData.class).withId(document.getId()));
-                            data.get(data.size()-1).setAnswers(answers);
+                            //data.get(data.size()-1).setAnswers(answers);
                         }
                     } else {
                         task.getException().printStackTrace();
@@ -57,7 +58,8 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
     public void removePost(String id, Runnable onFinish) {
         Map<String, Object> data = new HashMap<>();
         data.put("updateDate", FieldValue.serverTimestamp());
-        data.put("isRemoved", true);
+        data.put("removed", true);
+        //data.put("question", new Question("11", "Are you kalabun?"));
         db.collection(QuestionPostData.TABLE_NAME).document(id).set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

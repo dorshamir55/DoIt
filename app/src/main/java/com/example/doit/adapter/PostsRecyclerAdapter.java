@@ -47,7 +47,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         assert listData != null;
         holder.nickname.setText("Cristiano Ronaldo");
         holder.question.setText(listData.get(position).getQuestion().getQuestionText());
-//        holder.answers.setText(listData.get(position).getAnswers().get(0).getAnswerText());
+        holder.answers.setText(listData.get(position).getAnswers().get(0).getAnswerText());
 
 //        if(listData.get(position).getImagesURL() != null) {
 //            Glide.with(holder.imageView.getContext())

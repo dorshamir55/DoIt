@@ -39,9 +39,10 @@ public class MainRepository implements IMainRepository{
                 doAsynch(() -> {
                     // remove deleted posts from the cache..
                     for(int i = result.size()-1; i>=0; i--) {
-                        if(result.get(i).getIsRemoved()) {
+                        if(result.get(i).isRemoved()) {
                             adDAO.deletePost(result.get(i));
                             result.remove(i);
+                            //Delete from FireStore if needed.
                         }
                     }
                     //insert remaining elements..
@@ -62,7 +63,7 @@ public class MainRepository implements IMainRepository{
 
     @Override
     public void deletePost(QuestionPostData questionPostData, Runnable onFinish) {
-        //doAsynch(()->adDAO.deleteAd(adoptionItemData));
+        //doAsynch(()->adDAO.deleteAd(questionPostData));
         remoteDataSource.removePost(questionPostData.getId(), onFinish);
     }
 
