@@ -24,4 +24,5 @@
     <string name="no">לא</string>
     <string name="delete_message">האם את\\ה בטוח\\ה שאת\\ה רוצה למחוק את הפוסט?</string>
     <string name="delete_title">למחוק?</string>
+    <string name="vote">" הצבע"</string>
 </resources>

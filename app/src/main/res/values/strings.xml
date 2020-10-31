@@ -23,4 +23,5 @@
     <string name="no">No</string>
     <string name="delete_title">delete?</string>
     <string name="delete_message">Are you sure you want to delete the post?</string>
+    <string name="vote">vote</string>
 </resources>

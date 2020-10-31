@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,7 +48,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         assert listData != null;
         holder.nickname.setText("Cristiano Ronaldo");
         holder.question.setText(listData.get(position).getQuestion().getQuestionText());
-        holder.answers.setText(listData.get(position).getAnswers().get(0).getAnswerText());
+        holder.answer1.setText(listData.get(position).getAnswers().get(0).getAnswerText());
+        holder.answer2.setText(listData.get(position).getAnswers().get(1).getAnswerText());
+        holder.answer3.setText(listData.get(position).getAnswers().get(2).getAnswerText());
+        holder.answer4.setText(listData.get(position).getAnswers().get(3).getAnswerText());
 
 //        if(listData.get(position).getImagesURL() != null) {
 //            Glide.with(holder.imageView.getContext())
@@ -69,14 +73,20 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         private ImageView imageView;
         private TextView nickname;
         private TextView question;
-        private TextView answers;
+        private RadioButton answer1;
+        private RadioButton answer2;
+        private RadioButton answer3;
+        private RadioButton answer4;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_cell);
             nickname = itemView.findViewById(R.id.nickname_cell);
             question = itemView.findViewById(R.id.question_cell);
-            answers = itemView.findViewById(R.id.answers_cell);
+            answer1 = itemView.findViewById(R.id.answer1_cell);
+            answer2 = itemView.findViewById(R.id.answer2_cell);
+            answer3 = itemView.findViewById(R.id.answer3_cell);
+            answer4 = itemView.findViewById(R.id.answer4_cell);
 
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
