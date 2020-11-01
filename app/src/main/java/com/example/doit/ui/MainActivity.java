@@ -1,15 +1,20 @@
 package com.example.doit.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +31,7 @@ import com.example.doit.R;
 import com.example.doit.model.Answer;
 import com.example.doit.model.Question;
 import com.example.doit.model.QuestionPostData;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +44,8 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
+    private NavigationView navigationView;
+    private FragmentManager manager;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAuth auth;
 
@@ -53,10 +62,15 @@ public class MainActivity extends AppCompatActivity {
 //        answers.add(new Answer("4", "Yellow"));
 //        postQuestion(new QuestionPostData("22", question,  answers, Calendar.getInstance().getTime()));
 
+        manager = getSupportFragmentManager();
+
+        manager.beginTransaction().add(R.id.nav_host_fragment, new HomeFragment()).commit();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        getSupportActionBar().setHomeButtonEnabled(false);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -65,6 +79,43 @@ public class MainActivity extends AppCompatActivity {
             logout();
             return false;
         });
+
+        BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        switchToHomeFragment();
+
+                        break;
+
+                    case R.id.action_search:
+
+                        break;
+
+                    case R.id.action_add:
+                        switchToAddPostFragment();
+                        break;
+
+                    case R.id.action_statistics:
+
+                        break;
+
+                    case R.id.action_profile:
+                        switchToProfileFragment();
+
+                        break;
+                }
+                return true;
+            }
+
+        };
+
+        BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
         // which items considered as "top items" - will have a drawer icon instead of
         // back icon.
@@ -106,6 +157,18 @@ public class MainActivity extends AppCompatActivity {
 
             MyFirebaseMessagingService.updateTokenInFirestore(getApplicationContext(), newToken);
         }*/
+    }
+
+    public void switchToHomeFragment() {
+        manager.beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
+    }
+
+    public void switchToProfileFragment() {
+        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment()).commit();
+    }
+
+    public void switchToAddPostFragment() {
+        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment()).commit();
     }
 
     private void logout() {
