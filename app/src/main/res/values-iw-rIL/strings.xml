@@ -7,7 +7,7 @@
     <string name="menu_signout">התנתק</string>
     <string name="welcome">שלום,</string>
     <string name="menu_my_profile">הפרופיל שלי</string>
-    <string name="do_it">Do it!</string>
+    <string name="do_it">Do it !</string>
     <string name="login">התחבר</string>
     <string name="prompt_email">מייל</string>
     <string name="prompt_password">סיסמה</string>
@@ -30,4 +30,8 @@
     <string name="add">הוסף</string>
     <string name="statistics">סטטיסטיקה</string>
     <string name="profile">פרופיל</string>
+    <string name="choose_category">בחר קטגוריה...</string>
+    <string name="choose_question">מה אתה רוצה לשאול?</string>
+    <string name="choose_answers">בחר את התשובות האפשריות ביותר...</string>
+    <string name="post">העלה</string>
 </resources>

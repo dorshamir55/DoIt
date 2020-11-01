@@ -59,7 +59,6 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
         Map<String, Object> data = new HashMap<>();
         data.put("updateDate", FieldValue.serverTimestamp());
         data.put("removed", true);
-        //data.put("question", new Question("11", "Are you kalabun?"));
         db.collection(QuestionPostData.TABLE_NAME).document(id).set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

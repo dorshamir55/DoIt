@@ -134,10 +134,7 @@ public class HomeFragment extends Fragment {
             // onRefresh()..
             viewModel.loadAds(() -> swipeContainer.setRefreshing(false));
         });
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        swipeContainer.setColorSchemeResources(R.color.toolbarColor, R.color.toolbarColorLight, R.color.toolbarColorVeryLight);
 
 
         viewModel.getPostsLiveData().observe(getViewLifecycleOwner(), postsList -> {
