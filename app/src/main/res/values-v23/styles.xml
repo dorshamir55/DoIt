@@ -4,9 +4,12 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/white</item>
-        <item name="colorPrimaryDark">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/toolbarColor</item>
         <item name="colorAccent">@color/toolbarColorLight</item>
-        <item name="android:statusBarColor">@color/toolbarColorLight</item>
+        <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="elevation">0dp</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
     </style>
 </resources>
