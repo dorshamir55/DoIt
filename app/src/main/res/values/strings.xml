@@ -34,4 +34,17 @@
     <string name="choose_answers">Choose your best possibility answers...</string>
     <string name="post">Post</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+    <string-array name="category_list">
+        <item>@string/choose_category</item>
+        <item>@string/cinema</item>
+        <item>@string/events</item>
+        <item>@string/munch</item>
+        <item>@string/relationships</item>
+    </string-array>
+
+    <string name="munch">Munch</string>
+    <string name="relationships">Relationships</string>
+    <string name="events">Events</string>
+    <string name="cinema">Cinema</string>
 </resources>

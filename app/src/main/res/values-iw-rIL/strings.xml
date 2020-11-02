@@ -34,4 +34,8 @@
     <string name="choose_question">מה אתה רוצה לשאול?</string>
     <string name="choose_answers">בחר את התשובות האפשריות ביותר...</string>
     <string name="post">העלה</string>
+    <string name="munch">מאנצ\'</string>
+    <string name="relationships">זוגיות</string>
+    <string name="events">אירועים</string>
+    <string name="cinema">קולנוע</string>
 </resources>
