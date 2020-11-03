@@ -42,7 +42,7 @@
         android:id="@+id/topBorderBottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/toolbarColor"
+        android:background="@android:color/black"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         tools:ignore="MissingConstraints" />
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,8 +51,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:itemBackground="@android:color/white"
-        app:itemIconTint="@color/toolbarColor"
-        app:itemTextColor="@color/toolbarColor"
+        app:itemIconTint="@android:color/black"
+        app:itemTextColor="@android:color/black"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +70,5 @@
         app:layout_constraintBottom_toTopOf="@id/topBorderBottomNavigation"
         app:layout_constraintTop_toBottomOf="@id/appBar"
         app:navGraph="@navigation/app_navigation" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
