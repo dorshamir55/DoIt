@@ -45,24 +45,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        localHelper = new LocalHelper(getContext());
+        localHelper = new LocalHelper(getActivity());
         listPreference = findPreference("language");
         PreferenceManager.setDefaultValues(getActivity(), R.xml.settings_preferences, false);
 
         Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if(((String)newValue).equals("en")) {
-                    localHelper.setLocale("en");
-                }
-                else if(((String)newValue).equals("he")) {
-                    localHelper.setLocale("he");
-                }
 
+                localHelper.setLocale((String)newValue);
                 localHelper.saveLocale((String)newValue);
+
                 Intent refresh = new Intent(getActivity(), MainActivity.class);
                 getActivity().finish();
-                Toast.makeText(getActivity(), getResources().getString(R.string.language_changed), Toast.LENGTH_SHORT).show();
                 startActivity(refresh);
                 return true;
             }
@@ -70,19 +65,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         listPreference.setOnPreferenceChangeListener(listener);
     }
-
-//    public void setLocale(String lang) {
-//        Locale myLocale = new Locale(lang);
-//        Resources res = getResources();
-//        DisplayMetrics dm = res.getDisplayMetrics();
-//        Configuration conf = res.getConfiguration();
-//        conf.locale = myLocale;
-//        res.updateConfiguration(conf, dm);
-//        Intent refresh = new Intent(getActivity(), MainActivity.class);
-//        getActivity().finish();
-//        Toast.makeText(getActivity(), getResources().getString(R.string.language_changed), Toast.LENGTH_SHORT).show();
-//        startActivity(refresh);
-//    }
 
 //    @Override
 //    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

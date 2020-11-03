@@ -45,12 +45,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            getWindow().getDecorView().setLayoutDirection(
-                    "עברית".equals(Locale.getDefault().getDisplayLanguage())
-                            ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        }
-
 //        Question question = new Question("2", "What is it your favorite color?");
 //        ArrayList<Answer> answers = new ArrayList<>();
 //        answers.add(new Answer("1", "Red"));
