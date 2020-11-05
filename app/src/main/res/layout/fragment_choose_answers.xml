@@ -17,9 +17,7 @@
             android:id="@+id/selected_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/bubblegum_sans"
             android:textStyle="bold"
-            android:popupBackground="@drawable/view_style"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
