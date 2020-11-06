@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -18,12 +17,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.doit.R;
 import com.example.doit.model.Answer;
-import com.example.doit.model.NewAnswer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.model.Question;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.ui.OpeningScreenActivity;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -53,15 +51,15 @@ public class UploadPostService extends Service
 //        String userId = intent.getStringExtra("userId");
         NewQuestion oldQuestion = (NewQuestion) intent.getSerializableExtra("question");
 //        Toast.makeText(getApplicationContext(), oldQuestion.getId(), Toast.LENGTH_SHORT).show();
-//        Question question = new Question(oldQuestion.getId(), oldQuestion.getEn(), oldQuestion.getHe());
-        List<NewAnswer> oldAnswersList = (List<NewAnswer>) intent.getParcelableExtra("answers");
+        Question question = new Question(oldQuestion.getId(), oldQuestion.getEn(), oldQuestion.getHe());
+        List<Answer> oldAnswersList = (List<Answer>) intent.getSerializableExtra("answers");
         List<Answer> answersList = new ArrayList<>();
-        for(NewAnswer answer : oldAnswersList){
-            answersList.add(new Answer(answer.getId(), answer.getEn(), answer.getHe()));
+        for(Answer answer : oldAnswersList){
+            answersList.add(new Answer(answer.getAnswerID(), answer.getEn(), answer.getHe()));
         }
 
-        //final QuestionPostData data = new QuestionPostData("123", question, answersList);
-        //postQuestion(data);
+        final QuestionPostData data = new QuestionPostData("123", question, answersList);
+        postQuestion(data);
         return Service.START_NOT_STICKY;
     }
 

@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,9 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.doit.R;
+import com.example.doit.model.Answer;
 import com.example.doit.model.LocalHelper;
-import com.example.doit.model.NewAnswer;
-import com.example.doit.model.NewQuestion;
+import com.example.doit.model.AnswerInQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,7 @@ public class AnswersRecyclerAdapter extends RecyclerView.Adapter<AnswersRecycler
 
 
     @Nullable
-    private List<NewAnswer> listData;
+    private List<Answer> listData;
     private AnswersRecyclerListener listener;
     private LocalHelper localHelper;
     private Activity activity;
@@ -36,12 +34,12 @@ public class AnswersRecyclerAdapter extends RecyclerView.Adapter<AnswersRecycler
         this.localHelper = new LocalHelper(activity);
     }
 
-    public void setData(List<NewAnswer> data) {
+    public void setData(List<Answer> data) {
         if(data!=null)
             listData = new ArrayList<>(data);
     }
 
-    public List<NewAnswer> getData() {
+    public List<Answer> getData() {
         return listData;
     }
 
@@ -104,7 +102,7 @@ public class AnswersRecyclerAdapter extends RecyclerView.Adapter<AnswersRecycler
 
     public static interface AnswersRecyclerListener {
         //void onItemClick(int position, View clickedView, NewAnswer clickedAnswer);
-        void onCheckChange(int position, boolean isChecked,CompoundButton buttonView, NewAnswer clickedAnswer);
+        void onCheckChange(int position, boolean isChecked,CompoundButton buttonView, Answer clickedAnswer);
     }
 
 }

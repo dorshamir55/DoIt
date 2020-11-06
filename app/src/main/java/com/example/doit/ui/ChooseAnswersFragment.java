@@ -9,11 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,23 +25,25 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.adapter.AnswersRecyclerAdapter;
-import com.example.doit.adapter.QuestionsRecyclerAdapter;
+import com.example.doit.model.Answer;
+import com.example.doit.model.Consumer;
 import com.example.doit.model.LocalHelper;
-import com.example.doit.model.NewAnswer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.service.UploadPostService;
+import com.example.doit.viewmodel.IMainViewModel;
+import com.example.doit.viewmodel.MainViewModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static androidx.core.content.ContextCompat.startForegroundService;
-
 public class ChooseAnswersFragment extends Fragment {
+    private IMainViewModel viewModel;
     private AnswersRecyclerAdapter adapter;
     private LocalHelper localHelper;
 
-    private List<NewAnswer> answersList, checkedAnswersList;
+    private List<AnswerInQuestion> answersIDList;
+    private List<Answer> checkedAnswersList;
     private NewQuestion question;
     private TextView questionTextView;
     private CheckBox answerCheckBox;
@@ -53,8 +55,10 @@ public class ChooseAnswersFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         localHelper = new LocalHelper(getActivity());
         adapter = new AnswersRecyclerAdapter(getActivity());
+        localHelper = new LocalHelper(getActivity());
     }
 
     @Override
@@ -74,13 +78,28 @@ public class ChooseAnswersFragment extends Fragment {
         if (bundle != null) {
             question = (NewQuestion) bundle.getSerializable("question");
             String questionText = null;
+            
             if(localHelper.getLocale().equals("en"))
                 questionText = question.getEn().getQuestionText();
             else if(localHelper.getLocale().equals("he"))
                 questionText = question.getHe().getQuestionText();
             questionTextView.setText(questionText);
         }
-        answersList = question.getAnswers();
+        answersIDList = question.getAnswersInQuestion();
+
+        RecyclerView recyclerView = view.findViewById(R.id.answersRecycler);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
+
+        Consumer<List<Answer>> consumerList = new Consumer<List<Answer>>() {
+            @Override
+            public void apply(List<Answer> answerList) {
+                adapter.setData(answerList);
+                adapter.notifyDataSetChanged();
+            }
+        };
+        viewModel.getListOfAnswers(consumerList, answersIDList);
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,9 +110,11 @@ public class ChooseAnswersFragment extends Fragment {
                 }
 
                 Intent intent = new Intent(getActivity(), UploadPostService.class);
-                Bundle bundleToService = new Bundle();
-                bundleToService.putSerializable("question", question);
+//                Bundle bundleToService = new Bundle();
+//                bundleToService.putSerializable("question", question);
 //                bundleToService.putParcelable("answers", (Parcelable) checkedAnswersList);
+                intent.putExtra("question", question);
+                intent.putExtra("answers", (ArrayList<Answer>)checkedAnswersList);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     getActivity().startForegroundService(intent);
@@ -105,16 +126,9 @@ public class ChooseAnswersFragment extends Fragment {
             }
         });
 
-        RecyclerView recyclerView = view.findViewById(R.id.answersRecycler);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
-        adapter.setData(answersList);
-        adapter.notifyDataSetChanged();
-
         adapter.setRecyclerListener(new AnswersRecyclerAdapter.AnswersRecyclerListener() {
             @Override
-            public void onCheckChange(int position, boolean isChecked, CompoundButton buttonView, NewAnswer clickedAnswer) {
+            public void onCheckChange(int position, boolean isChecked, CompoundButton buttonView, Answer clickedAnswer) {
                 View view = (View) buttonView.getParent();
                 if(isChecked) {
                     if(amountOfAnswers>=MAX_ANSWERS) {
@@ -134,5 +148,11 @@ public class ChooseAnswersFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        
     }
 }

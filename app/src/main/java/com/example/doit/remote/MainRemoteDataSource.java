@@ -3,6 +3,7 @@ package com.example.doit.remote;
 import android.app.Activity;
 
 import com.example.doit.model.Answer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.NewQuestion;
@@ -82,6 +83,31 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                         data = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult().getDocuments()) {
                             data.add(document.toObject(NewQuestion.class).withId(document.getId()));
+                        }
+                    } else {
+                        task.getException().printStackTrace();
+                    }
+
+                    if(consumerList != null)
+                        consumerList.apply(data);
+                });
+    }
+
+    @Override
+    public void fetchAnswers(Consumer<List<Answer>> consumerList, List<AnswerInQuestion> answerInQuestions) {
+        Query query = db.collection(Answer.TABLE_NAME);
+        query.get()
+                .addOnCompleteListener(task -> {
+                    List<Answer> data = null;
+                    if (task.isSuccessful()) {
+                        data = new ArrayList<>();
+                        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                        if(answerInQuestions != null) {
+                            for (AnswerInQuestion answer : answerInQuestions) {
+                                for (DocumentSnapshot document : task.getResult().getDocuments())
+                                    if (document.getId().equals(answer.getAnswerID()))
+                                        data.add(document.toObject(Answer.class).withId(document.getId()));
+                            }
                         }
                     } else {
                         task.getException().printStackTrace();

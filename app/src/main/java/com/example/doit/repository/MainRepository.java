@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 
 import com.example.doit.db.AdDAO;
 import com.example.doit.db.AppDatabase;
+import com.example.doit.model.Answer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.model.QuestionPostData;
@@ -73,6 +75,11 @@ public class MainRepository implements IMainRepository{
     @Override
     public void getListOfQuestions(Consumer<List<NewQuestion>> consumerList) {
         remoteDataSource.fetchAllQuestions(consumerList);
+    }
+
+    @Override
+    public void getListOfAnswers(Consumer<List<Answer>> consumerList, List<AnswerInQuestion> answerInQuestions) {
+        remoteDataSource.fetchAnswers(consumerList, answerInQuestions);
     }
 
     private void doAsynch(Runnable task) {

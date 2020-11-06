@@ -1,0 +1,26 @@
+package com.example.doit.model;
+
+import com.google.firebase.firestore.Exclude;
+
+import java.io.Serializable;
+
+public class AnswerInQuestion implements Serializable {
+    private String answerID;
+
+    public AnswerInQuestion() {
+
+    }
+
+//    public <T extends AnswerInQuestion> T withId(String id) {
+//        this.id = id;
+//        return (T)this;
+//    }
+
+    public String getAnswerID() {
+        return answerID;
+    }
+
+    public void setAnswerID(String answerID) {
+        this.answerID = answerID;
+    }
+}

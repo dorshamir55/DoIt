@@ -20,16 +20,16 @@ public class NewQuestion implements Serializable {
     private String id;
     private QuestionLanguage en;
     private QuestionLanguage he;
-    private List<NewAnswer> answers;
+    private List<AnswerInQuestion> answersInQuestion;
 
     public NewQuestion() {
 
     }
 
-    public NewQuestion(QuestionLanguage en, QuestionLanguage he, List<NewAnswer> answers) {
+    public NewQuestion(QuestionLanguage en, QuestionLanguage he, List<AnswerInQuestion> answersInQuestion) {
         this.en = en;
         this.he = he;
-        this.answers = answers;
+        this.answersInQuestion = answersInQuestion;
     }
 
     public <T extends NewQuestion> T withId(String id) {
@@ -63,11 +63,11 @@ public class NewQuestion implements Serializable {
         this.he = he;
     }
 
-    public List<NewAnswer> getAnswers() {
-        return answers;
+    public List<AnswerInQuestion> getAnswersInQuestion() {
+        return answersInQuestion;
     }
 
-    public void setAnswers(List<NewAnswer> answers) {
-        this.answers = answers;
+    public void setAnswersInQuestion(List<AnswerInQuestion> answersInQuestion) {
+        this.answersInQuestion = answersInQuestion;
     }
 }

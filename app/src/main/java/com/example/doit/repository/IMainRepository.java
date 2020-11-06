@@ -2,6 +2,8 @@ package com.example.doit.repository;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.doit.model.Answer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.model.QuestionPostData;
@@ -13,4 +15,5 @@ public interface IMainRepository {
     public LiveData<List<QuestionPostData>> getPostsLiveData();
     public void deletePost(QuestionPostData questionPostData, Runnable onFinish);
     public void getListOfQuestions(Consumer<List<NewQuestion>> consumerList);
+    public void getListOfAnswers(Consumer<List<Answer>> consumerList, List<AnswerInQuestion> answerInQuestions);
 }

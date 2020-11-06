@@ -1,29 +1,51 @@
 package com.example.doit.model;
 
+import androidx.room.Embedded;
+
+import com.esotericsoftware.kryo.NotNull;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties  // For Firebase deserialization
-public class Answer {
-    private String answerID;
+public class Answer implements Serializable {
+    public static final String TABLE_NAME = "answers";
+
+    @NotNull
+    private String id;
+    @Embedded(prefix = "answer_")
     private AnswerLanguage en;
+    @Embedded(prefix = "answer_")
     private AnswerLanguage he;
 
     public Answer() {
 
     }
 
-    public Answer(String answerID, AnswerLanguage en, AnswerLanguage he) {
-        this.answerID = answerID;
+    public Answer(AnswerLanguage en, AnswerLanguage he) {
         this.en = en;
         this.he = he;
     }
 
-    public String getAnswerID() {
-        return answerID;
+    public Answer(String id, AnswerLanguage en, AnswerLanguage he) {
+        this.id = id;
+        this.en = en;
+        this.he = he;
     }
 
-    public void setAnswerID(String answerID) {
-        this.answerID = answerID;
+    public <T extends Answer> T withId(String id) {
+        this.id = id;
+        return (T)this;
+    }
+
+    @Exclude
+    public String getAnswerID() {
+        return id;
+    }
+    @Exclude
+    public void setAnswerID(String id) {
+        this.id = id;
     }
 
     public AnswerLanguage getEn() {

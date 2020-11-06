@@ -2,6 +2,8 @@ package com.example.doit.viewmodel;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.doit.model.Answer;
+import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.model.QuestionPostData;
@@ -13,5 +15,6 @@ public interface IMainViewModel {
     public void loadAds(Runnable onFinish);
     public void deletePost(QuestionPostData questionPostData);
     public void getListOfQuestions(Consumer<List<NewQuestion>> consumerList);
+    public void getListOfAnswers(Consumer<List<Answer>> consumerList, List<AnswerInQuestion> answerInQuestions);
 }
 
