@@ -1,6 +1,5 @@
 package com.example.doit.repository;
 
-import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +11,7 @@ import com.example.doit.db.AppDatabase;
 import com.example.doit.model.Answer;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
-import com.example.doit.model.NewQuestion;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.remote.IMainRemoteDataSource;
 import com.example.doit.remote.MainRemoteDataSource;
@@ -73,7 +72,7 @@ public class MainRepository implements IMainRepository{
     }
 
     @Override
-    public void getListOfQuestions(Consumer<List<NewQuestion>> consumerList) {
+    public void getListOfQuestions(Consumer<List<QuestionFireStore>> consumerList) {
         remoteDataSource.fetchAllQuestions(consumerList);
     }
 

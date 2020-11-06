@@ -2,14 +2,17 @@ package com.example.doit.model;
 
 import androidx.room.Embedded;
 
+import com.esotericsoftware.kryo.NotNull;
 import com.google.firebase.firestore.IgnoreExtraProperties;
+import com.google.gson.annotations.SerializedName;
 
 @IgnoreExtraProperties  // For Firebase deserialization
 public class Question {
+    @NotNull
     private String questionID;
-    @Embedded(prefix = "question_")
+    @Embedded(prefix = "english_")
     private QuestionLanguage en;
-    @Embedded(prefix = "question_")
+    @Embedded(prefix = "hebrew_")
     private QuestionLanguage he;
 
     public Question() {

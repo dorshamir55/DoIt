@@ -1,13 +1,9 @@
 package com.example.doit.remote;
 
-import android.app.Activity;
-
 import com.example.doit.model.Answer;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
-import com.example.doit.model.LocalHelper;
-import com.example.doit.model.NewQuestion;
-import com.example.doit.model.Question;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -74,15 +70,15 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
     }
 
     @Override
-    public void fetchAllQuestions(Consumer<List<NewQuestion>> consumerList) {
-        Query query = db.collection(NewQuestion.TABLE_NAME);
+    public void fetchAllQuestions(Consumer<List<QuestionFireStore>> consumerList) {
+        Query query = db.collection(QuestionFireStore.TABLE_NAME);
         query.get()
                 .addOnCompleteListener(task -> {
-                    List<NewQuestion> data = null;
+                    List<QuestionFireStore> data = null;
                     if (task.isSuccessful()) {
                         data = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                            data.add(document.toObject(NewQuestion.class).withId(document.getId()));
+                            data.add(document.toObject(QuestionFireStore.class).withId(document.getId()));
                         }
                     } else {
                         task.getException().printStackTrace();

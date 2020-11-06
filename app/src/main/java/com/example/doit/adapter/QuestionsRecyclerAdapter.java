@@ -1,16 +1,12 @@
 package com.example.doit.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.doit.R;
 import com.example.doit.model.LocalHelper;
-import com.example.doit.model.NewQuestion;
-import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.QuestionFireStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +22,7 @@ import java.util.List;
 public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecyclerAdapter.RecyclerViewHolder> implements Filterable {
 
     @Nullable
-    private List<NewQuestion> listData, listDataFull;
+    private List<QuestionFireStore> listData, listDataFull;
     private QuestionsRecyclerListener listener;
     private LocalHelper localHelper;
     private Activity activity;
@@ -37,14 +32,14 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
         this.localHelper = new LocalHelper(activity);
     }
 
-    public void setData(List<NewQuestion> data) {
+    public void setData(List<QuestionFireStore> data) {
         if(data!=null) {
             listData = new ArrayList<>(data);
-            listDataFull = new ArrayList<NewQuestion>(data);
+            listDataFull = new ArrayList<QuestionFireStore>(data);
         }
     }
 
-    public List<NewQuestion> getData() {
+    public List<QuestionFireStore> getData() {
         return listData;
     }
 
@@ -101,7 +96,7 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
     }
 
     public static interface QuestionsRecyclerListener {
-        void onItemClick(int position, View clickedView, NewQuestion clickedQuestion);
+        void onItemClick(int position, View clickedView, QuestionFireStore clickedQuestion);
     }
 
     @Override
@@ -112,20 +107,20 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
     private Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<NewQuestion> filterList = new ArrayList<>();
+            List<QuestionFireStore> filterList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
                 filterList.addAll(listData);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (NewQuestion newQuestion : listDataFull) {
+                for (QuestionFireStore questionFireStore : listDataFull) {
                     if (localHelper.getLocale().equals("en")) {
-                        if (newQuestion.getEn().getQuestionText().toLowerCase().contains(filterPattern)) {
-                            filterList.add(newQuestion);
+                        if (questionFireStore.getEn().getQuestionText().toLowerCase().contains(filterPattern)) {
+                            filterList.add(questionFireStore);
                         }
                     } else if (localHelper.getLocale().equals("he")) {
-                        if (newQuestion.getHe().getQuestionText().toLowerCase().contains(filterPattern)) {
-                            filterList.add(newQuestion);
+                        if (questionFireStore.getHe().getQuestionText().toLowerCase().contains(filterPattern)) {
+                            filterList.add(questionFireStore);
                         }
                     }
                 }

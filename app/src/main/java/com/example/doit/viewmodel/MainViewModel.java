@@ -11,7 +11,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.doit.model.Answer;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
-import com.example.doit.model.NewQuestion;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.repository.IMainRepository;
 import com.example.doit.repository.MainRepository;
@@ -47,7 +47,7 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     }
 
     @Override
-    public void getListOfQuestions(Consumer<List<NewQuestion>> consumerList) {
+    public void getListOfQuestions(Consumer<List<QuestionFireStore>> consumerList) {
         mainRepository.getListOfQuestions(consumerList);
     }
 

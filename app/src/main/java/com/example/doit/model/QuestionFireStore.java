@@ -1,10 +1,5 @@
 package com.example.doit.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.room.Embedded;
-
 import com.esotericsoftware.kryo.NotNull;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;
@@ -13,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @IgnoreExtraProperties  // For Firebase deserialization
-public class NewQuestion implements Serializable {
+public class QuestionFireStore implements Serializable {
     public static final String TABLE_NAME = "questions";
 
     @NotNull
@@ -22,17 +17,17 @@ public class NewQuestion implements Serializable {
     private QuestionLanguage he;
     private List<AnswerInQuestion> answersInQuestion;
 
-    public NewQuestion() {
+    public QuestionFireStore() {
 
     }
 
-    public NewQuestion(QuestionLanguage en, QuestionLanguage he, List<AnswerInQuestion> answersInQuestion) {
+    public QuestionFireStore(QuestionLanguage en, QuestionLanguage he, List<AnswerInQuestion> answersInQuestion) {
         this.en = en;
         this.he = he;
         this.answersInQuestion = answersInQuestion;
     }
 
-    public <T extends NewQuestion> T withId(String id) {
+    public <T extends QuestionFireStore> T withId(String id) {
         this.id = id;
         return (T)this;
     }

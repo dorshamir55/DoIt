@@ -1,7 +1,5 @@
 package com.example.doit.ui;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -9,12 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,14 +23,11 @@ import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
-import com.bumptech.glide.request.transition.Transition;
 import com.example.doit.R;
-import com.example.doit.adapter.PostsRecyclerAdapter;
 import com.example.doit.adapter.QuestionsRecyclerAdapter;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.LocalHelper;
-import com.example.doit.model.NewQuestion;
-import com.example.doit.model.Question;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 
@@ -51,7 +44,7 @@ public class AddPostFragment extends Fragment {
 
     private Spinner categoryS;
     private ArrayAdapter categorySpinnerAdapter;
-    private List<NewQuestion> currentQuestionsList, allQuestionsList;
+    private List<QuestionFireStore> currentQuestionsList, allQuestionsList;
     private SearchView searchView;
     private MenuItem searchItem;
 
@@ -79,9 +72,9 @@ public class AddPostFragment extends Fragment {
     public void onResume() {
         super.onResume();
         localHelper = new LocalHelper(getActivity());
-        Consumer<List<NewQuestion>> consumerList = new Consumer<List<NewQuestion>>() {
+        Consumer<List<QuestionFireStore>> consumerList = new Consumer<List<QuestionFireStore>>() {
             @Override
-            public void apply(List<NewQuestion> questionsList) {
+            public void apply(List<QuestionFireStore> questionsList) {
                 allQuestionsList = questionsList;
                 adapter.setData(allQuestionsList);
                 adapter.notifyDataSetChanged();
@@ -115,7 +108,7 @@ public class AddPostFragment extends Fragment {
 
         adapter.setRecyclerListener(new QuestionsRecyclerAdapter.QuestionsRecyclerListener() {
             @Override
-            public void onItemClick(int position, View clickedView, NewQuestion clickedQuestion) {
+            public void onItemClick(int position, View clickedView, QuestionFireStore clickedQuestion) {
                 ChooseAnswersFragment chooseAnswerFragment = new ChooseAnswersFragment();
                 Bundle bundle = new Bundle();
                 //bundle.putString("questionID", clickedQuestion.getId());
@@ -123,9 +116,9 @@ public class AddPostFragment extends Fragment {
                 chooseAnswerFragment.setArguments(bundle);
 
                 FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.nav_host_fragment, chooseAnswerFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.nav_host_fragment, chooseAnswerFragment, "ChooseAnswersFragment").commit();
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
             }
         });
 

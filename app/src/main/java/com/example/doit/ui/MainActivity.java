@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchToAddPostFragment() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment()).commit();
+        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment(), "AddPostFragment").commit();
     }
 
     public void switchToStatisticsFragment() {

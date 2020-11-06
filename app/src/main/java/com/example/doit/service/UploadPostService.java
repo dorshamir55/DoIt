@@ -17,8 +17,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.doit.R;
 import com.example.doit.model.Answer;
-import com.example.doit.model.AnswerInQuestion;
-import com.example.doit.model.NewQuestion;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.Question;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.ui.OpeningScreenActivity;
@@ -46,10 +45,7 @@ public class UploadPostService extends Service
     public int onStartCommand(Intent intent, int flags, int startId) {
         startForeground(ID, createNotification());
 
-//        ArrayList<Uri> images = intent.getParcelableArrayListExtra("images");
-//        DogData dogData = (DogData)intent.getParcelableExtra("dogData");
-//        String userId = intent.getStringExtra("userId");
-        NewQuestion oldQuestion = (NewQuestion) intent.getSerializableExtra("question");
+        QuestionFireStore oldQuestion = (QuestionFireStore) intent.getSerializableExtra("question");
 //        Toast.makeText(getApplicationContext(), oldQuestion.getId(), Toast.LENGTH_SHORT).show();
         Question question = new Question(oldQuestion.getId(), oldQuestion.getEn(), oldQuestion.getHe());
         List<Answer> oldAnswersList = (List<Answer>) intent.getSerializableExtra("answers");

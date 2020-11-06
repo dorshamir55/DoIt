@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +28,7 @@ import com.example.doit.model.Answer;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.AnswerInQuestion;
-import com.example.doit.model.NewQuestion;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.service.UploadPostService;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
@@ -44,7 +43,7 @@ public class ChooseAnswersFragment extends Fragment {
 
     private List<AnswerInQuestion> answersIDList;
     private List<Answer> checkedAnswersList;
-    private NewQuestion question;
+    private QuestionFireStore question;
     private TextView questionTextView;
     private CheckBox answerCheckBox;
     private Button uploadButton;
@@ -76,7 +75,7 @@ public class ChooseAnswersFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            question = (NewQuestion) bundle.getSerializable("question");
+            question = (QuestionFireStore) bundle.getSerializable("question");
             String questionText = null;
             
             if(localHelper.getLocale().equals("en"))
@@ -121,8 +120,7 @@ public class ChooseAnswersFragment extends Fragment {
                 else
                     getActivity().startService(intent);
 
-                FragmentManager manager = getParentFragmentManager();
-                manager.beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment());
+                getParentFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
             }
         });
 
@@ -148,11 +146,5 @@ public class ChooseAnswersFragment extends Fragment {
                 }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        
     }
 }

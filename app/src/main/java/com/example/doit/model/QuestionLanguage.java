@@ -1,13 +1,16 @@
 package com.example.doit.model;
 
 import androidx.room.Embedded;
+import androidx.room.Relation;
+
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
 
+
 public class QuestionLanguage implements Serializable {
-    @Embedded(prefix = "category_")
+
     private String category;
-    @Embedded(prefix = "questionText_")
     private String questionText;
 
     public QuestionLanguage() {

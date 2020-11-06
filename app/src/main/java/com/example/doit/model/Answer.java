@@ -14,9 +14,9 @@ public class Answer implements Serializable {
 
     @NotNull
     private String id;
-    @Embedded(prefix = "answer_")
+    @Embedded
     private AnswerLanguage en;
-    @Embedded(prefix = "answer_")
+    @Embedded
     private AnswerLanguage he;
 
     public Answer() {
