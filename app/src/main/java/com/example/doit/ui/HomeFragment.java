@@ -42,13 +42,15 @@ public class HomeFragment extends Fragment {
 
     private IMainViewModel viewModel = null;
     private SwipeRefreshLayout swipeContainer;
-    private PostsRecyclerAdapter adapter = new PostsRecyclerAdapter();
+    private PostsRecyclerAdapter adapter;// = new PostsRecyclerAdapter(getActivity());
     private BroadcastReceiver reloadAdsReceiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        adapter = new PostsRecyclerAdapter(getActivity());
 
         reloadAdsReceiver = new BroadcastReceiver() {
             @Override

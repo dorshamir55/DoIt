@@ -1,5 +1,10 @@
 package com.example.doit.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.room.Embedded;
+
 import com.esotericsoftware.kryo.NotNull;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.IgnoreExtraProperties;

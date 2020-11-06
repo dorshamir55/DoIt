@@ -1,5 +1,6 @@
 package com.example.doit.adapter;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.doit.R;
+import com.example.doit.model.LocalHelper;
 import com.example.doit.model.NewQuestion;
 import com.example.doit.model.QuestionPostData;
 
@@ -26,6 +28,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     @Nullable
     private List<QuestionPostData> listData;
     private PostsRecyclerListener listener;
+    private LocalHelper localHelper;
+    private Activity activity;
+
+    public PostsRecyclerAdapter(Activity activity) {
+        this.activity = activity;
+        this.localHelper = new LocalHelper(activity);
+    }
 
     public void setData(List<QuestionPostData> data) {
         listData = data;
@@ -51,11 +60,20 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         assert listData != null;
         holder.nickname.setText("Cristiano Ronaldo");
-        holder.question.setText(listData.get(position).getQuestion().getQuestionText());
-        holder.answer1.setText(listData.get(position).getAnswers().get(0).getAnswerText());
-        holder.answer2.setText(listData.get(position).getAnswers().get(1).getAnswerText());
-        holder.answer3.setText(listData.get(position).getAnswers().get(2).getAnswerText());
-        holder.answer4.setText(listData.get(position).getAnswers().get(3).getAnswerText());
+        if(localHelper.getLocale().equals("en")) {
+            holder.question.setText(listData.get(position).getQuestion().getEn().getQuestionText());
+            holder.answer1.setText(listData.get(position).getAnswers().get(0).getEn().getAnswerText());
+            holder.answer2.setText(listData.get(position).getAnswers().get(1).getEn().getAnswerText());
+            holder.answer3.setText(listData.get(position).getAnswers().get(2).getEn().getAnswerText());
+            holder.answer4.setText(listData.get(position).getAnswers().get(3).getEn().getAnswerText());
+        }
+        else if(localHelper.getLocale().equals("he")){
+            holder.question.setText(listData.get(position).getQuestion().getHe().getQuestionText());
+            holder.answer1.setText(listData.get(position).getAnswers().get(0).getHe().getAnswerText());
+            holder.answer2.setText(listData.get(position).getAnswers().get(1).getHe().getAnswerText());
+            holder.answer3.setText(listData.get(position).getAnswers().get(2).getHe().getAnswerText());
+            holder.answer4.setText(listData.get(position).getAnswers().get(3).getHe().getAnswerText());
+        }
 
 //        if(listData.get(position).getImagesURL() != null) {
 //            Glide.with(holder.imageView.getContext())

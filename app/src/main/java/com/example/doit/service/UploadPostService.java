@@ -1,0 +1,126 @@
+package com.example.doit.service;
+
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.IBinder;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.example.doit.R;
+import com.example.doit.model.Answer;
+import com.example.doit.model.NewAnswer;
+import com.example.doit.model.NewQuestion;
+import com.example.doit.model.Question;
+import com.example.doit.model.QuestionPostData;
+import com.example.doit.ui.OpeningScreenActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UploadPostService extends Service
+{
+    private static final int ID = 1;
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        startForeground(ID, createNotification());
+
+//        ArrayList<Uri> images = intent.getParcelableArrayListExtra("images");
+//        DogData dogData = (DogData)intent.getParcelableExtra("dogData");
+//        String userId = intent.getStringExtra("userId");
+        NewQuestion oldQuestion = (NewQuestion) intent.getSerializableExtra("question");
+//        Toast.makeText(getApplicationContext(), oldQuestion.getId(), Toast.LENGTH_SHORT).show();
+//        Question question = new Question(oldQuestion.getId(), oldQuestion.getEn(), oldQuestion.getHe());
+        List<NewAnswer> oldAnswersList = (List<NewAnswer>) intent.getParcelableExtra("answers");
+        List<Answer> answersList = new ArrayList<>();
+        for(NewAnswer answer : oldAnswersList){
+            answersList.add(new Answer(answer.getId(), answer.getEn(), answer.getHe()));
+        }
+
+        //final QuestionPostData data = new QuestionPostData("123", question, answersList);
+        //postQuestion(data);
+        return Service.START_NOT_STICKY;
+    }
+
+    private void postQuestion(QuestionPostData questionPostData) {
+        FirebaseFirestore.getInstance().collection("posts")
+                .add(questionPostData)
+                .addOnSuccessListener(docRef -> {
+                    LocalBroadcastManager.getInstance(getApplicationContext())
+                            .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
+                    stopSelf();
+                })
+                .addOnFailureListener(ex -> {
+                    ex.printStackTrace();
+                    showMessageAndFinish(getResources().getString(R.string.post_question_fail));
+                });
+    }
+
+    private void showMessageAndFinish(String msg) {
+        try {
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            stopSelf();
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    private Notification createNotification() {
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "com.project.service.UploadNotifID";
+        if(Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    getResources().getString(R.string.channel_name), NotificationManager.IMPORTANCE_HIGH);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription(getResources().getString(R.string.channel_name));
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,
+                NOTIFICATION_CHANNEL_ID);
+
+        // Create notification action intent..
+        Intent notificationIntent = new Intent(getApplicationContext(), OpeningScreenActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+
+        notificationBuilder.setAutoCancel(false)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.doit_icon)
+                .setContentTitle(getString(R.string.posting_title))
+                .setContentText(getString(R.string.posting_message))
+                .setContentIntent(pi);
+
+        return notificationBuilder.build();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+}

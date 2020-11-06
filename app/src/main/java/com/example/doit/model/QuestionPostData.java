@@ -30,8 +30,8 @@ public class QuestionPostData {
 
     @Embedded
     private Question question;
-
-    private List<Answer> answers = null;
+    
+    private List<Answer> answers;
 
     @ServerTimestamp
     private Date updateDate;  // update (also created) date - from Firebase
@@ -41,11 +41,10 @@ public class QuestionPostData {
     public QuestionPostData() {
     }
 
-    public QuestionPostData(String postedUserId, Question question, List<Answer> answers, Date updateDate) {
+    public QuestionPostData(String postedUserId, Question question, List<Answer> answers) {
         this.postedUserId = postedUserId;
         this.question = question;
         this.answers = answers;
-        this.updateDate = updateDate;
         this.isRemoved = false;
     }
 

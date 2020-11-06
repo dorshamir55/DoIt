@@ -50,4 +50,10 @@
     <string name="choose_language">בחר שפה</string>
     <string name="language_changed">שפה שונתה!</string>
     <string name="max_answers_message">אתה לא יכול לבחור יותר מ-4 תשובות</string>
+    <string name="upload">העלה</string>
+    <string name="valid_answers_message">אתה חייב לסמן 4 תשובות כדי לפרסם שאלה!</string>
+    <string name="post_question_fail">העלאת השאלה נכשלה!</string>
+    <string name="channel_name">channel name</string>
+    <string name="posting_message">פעולה זו עשויה להימשך מספר שניות.</string>
+    <string name="posting_title">מעלה...</string>
 </resources>

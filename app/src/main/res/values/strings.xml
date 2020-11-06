@@ -72,5 +72,11 @@
     <string name="choose_language">Choose language</string>
     <string name="language_changed">Language was changed!</string>
     <string name="max_answers_message">You can\'t choose over 4 answers</string>
+    <string name="upload">Upload</string>
+    <string name="valid_answers_message">You must check 4 answers to post question!</string>
+    <string name="post_question_fail">Posting question failed!</string>
+    <string name="channel_name">channel name</string>
+    <string name="posting_title">Posting...</string>
+    <string name="posting_message">This may take a few seconds.</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

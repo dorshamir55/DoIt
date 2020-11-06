@@ -6,6 +6,7 @@ public class AnswerLanguage implements Serializable {
     private String answerText;
 
     public AnswerLanguage() {
+
     }
 
     public AnswerLanguage(String answerText) {

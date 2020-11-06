@@ -1,16 +1,25 @@
 package com.example.doit.model;
 
+import androidx.room.Embedded;
+
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
+@IgnoreExtraProperties  // For Firebase deserialization
 public class Question {
     private String questionID;
-    private String questionText;
+    @Embedded(prefix = "question_")
+    private QuestionLanguage en;
+    @Embedded(prefix = "question_")
+    private QuestionLanguage he;
 
     public Question() {
 
     }
 
-    public Question(String questionID, String questionText) {
+    public Question(String questionID, QuestionLanguage en, QuestionLanguage he) {
         this.questionID = questionID;
-        this.questionText = questionText;
+        this.en = en;
+        this.he = he;
     }
 
     public String getQuestionID() {
@@ -21,11 +30,19 @@ public class Question {
         this.questionID = questionID;
     }
 
-    public String getQuestionText() {
-        return questionText;
+    public QuestionLanguage getEn() {
+        return en;
     }
 
-    public void setQuestionText(String questionText) {
-        this.questionText = questionText;
+    public void setEn(QuestionLanguage en) {
+        this.en = en;
+    }
+
+    public QuestionLanguage getHe() {
+        return he;
+    }
+
+    public void setHe(QuestionLanguage he) {
+        this.he = he;
     }
 }

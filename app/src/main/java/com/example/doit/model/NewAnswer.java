@@ -1,10 +1,13 @@
 package com.example.doit.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
 
-public class NewAnswer implements Serializable {
+public class NewAnswer implements Serializable, Parcelable {
     private String id;
     private AnswerLanguage en;
     private AnswerLanguage he;
@@ -47,5 +50,15 @@ public class NewAnswer implements Serializable {
 
     public void setHe(AnswerLanguage he) {
         this.he = he;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

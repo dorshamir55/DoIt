@@ -5,6 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 
     <application
         android:allowBackup="true"
@@ -28,6 +30,10 @@
             android:name=".ui.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+
+        <service
+            android:name=".service.UploadPostService"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

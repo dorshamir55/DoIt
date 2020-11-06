@@ -1,16 +1,21 @@
 package com.example.doit.model;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
+@IgnoreExtraProperties  // For Firebase deserialization
 public class Answer {
     private String answerID;
-    private String answerText;
+    private AnswerLanguage en;
+    private AnswerLanguage he;
 
     public Answer() {
 
     }
 
-    public Answer(String answerID, String answerText) {
+    public Answer(String answerID, AnswerLanguage en, AnswerLanguage he) {
         this.answerID = answerID;
-        this.answerText = answerText;
+        this.en = en;
+        this.he = he;
     }
 
     public String getAnswerID() {
@@ -21,11 +26,20 @@ public class Answer {
         this.answerID = answerID;
     }
 
-    public String getAnswerText() {
-        return answerText;
+    public AnswerLanguage getEn() {
+        return en;
     }
 
-    public void setAnswerText(String answerText) {
-        this.answerText = answerText;
+    public void setEn(AnswerLanguage en) {
+        this.en = en;
+    }
+
+    public AnswerLanguage getHe() {
+        return he;
+    }
+
+    public void setHe(AnswerLanguage he) {
+        this.he = he;
     }
 }
+
