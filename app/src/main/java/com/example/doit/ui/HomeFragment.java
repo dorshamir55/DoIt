@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.adapter.PostsRecyclerAdapter;
@@ -65,14 +66,6 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-/*    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        getActivity().getMenuInflater().inflate(R.menu.search_menu, menu);
-        MenuItem item = menu.findItem(R.id.search_bar);
-    }*/
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
@@ -85,48 +78,34 @@ public class HomeFragment extends Fragment {
         adapter.setRecyclerListener(new PostsRecyclerAdapter.PostsRecyclerListener() {
             @Override
             public void onItemClick(int position, View clickedView, QuestionPostData clickedPost) {
-                new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.delete_title)
-                        .setMessage(R.string.delete_message)
-                        .setIcon(R.drawable.doit_icon)
-                        .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
-                            viewModel.deletePost(clickedPost);
-                            adapter.getData().remove(position);
-                            adapter.notifyItemRemoved(position);
-                        })
-                        .setNegativeButton(getString(R.string.no), null)
-                        .create()
-                        .show();
+//                deletePost(position, clickedPost);
             }
-        });
 
-/*        adapter.setRecyclerListener(new AdsRecyclerAdapter.AdsRecyclerListener() {
             @Override
-            public void onItemClick(int position, View clickedView, QuestionPostData clickedPost) {
-                ArrayList<Uri> uriList = new ArrayList<>();
-                if (clickedPost.getImagesURL()==null) {
-                    uriList.add(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.mipmap.dog_profile));
+            public void onVoteClick(int position, View clickedView, QuestionPostData clickedPost, int votedRadiobuttonID) {
+                switch (votedRadiobuttonID) {
+                    case R.id.answer1_cell_post:
+                        vote(clickedPost, 0);
+                        break;
+                    case R.id.answer2_cell_post:
+                        vote(clickedPost, 1);
+                        break;
+                    case R.id.answer3_cell_post:
+                        vote(clickedPost, 2);
+                        break;
+                    case R.id.answer4_cell_post:
+                        vote(clickedPost, 3);
+                        break;
                 }
-                else {
-                    for (String uri : clickedAd.getImagesURL())
-                        uriList.add(Uri.parse(uri));
-                }
+            }
 
-                Intent intent = new Intent(getContext(), CardViewDogInfo.class)
-                        .putParcelableArrayListExtra("images", uriList)
-                        .putExtra("name", clickedAd.getPostedUserName())
-                        .putExtra("email", clickedAd.getPostedUserId())
-                        .putExtra("phoneNumber", clickedAd.getPostedUserPhoneNumber())
-                        .putExtra("title", clickedAd.getTitle())
-                        .putExtra("city", clickedAd.getCity())
-                        .putExtra("district", clickedAd.getDistrict())
-                        .putExtra("freeText", clickedAd.getText())
-                        .putExtra("dogData", clickedAd.getDogData());
-                startActivity(intent);
+            @Override
+            public void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost) {
+                deletePost(position, clickedPost);
             }
         });
 
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+/*      FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), PostAdActivity.class));
         });*/
@@ -137,7 +116,6 @@ public class HomeFragment extends Fragment {
             viewModel.loadAds(() -> swipeContainer.setRefreshing(false));
         });
         swipeContainer.setColorSchemeResources(R.color.toolbarColor, R.color.toolbarColorLight, R.color.toolbarColorVeryLight);
-
 
         viewModel.getPostsLiveData().observe(getViewLifecycleOwner(), postsList -> {
             adapter.setData(postsList);
@@ -163,6 +141,26 @@ public class HomeFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);*/
+    }
+
+    private void vote(QuestionPostData clickedPost, int answerVoted){
+        //clickedPost.getAnswers().get(answerPosition).setVotes(clickedPost.getAnswers().get(answerPosition).getVotes() + 1);
+        viewModel.vote(clickedPost.getId(), clickedPost.getAnswers(), answerVoted);
+    }
+
+    private void deletePost(int position, QuestionPostData clickedPost){
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.delete_title)
+                .setMessage(R.string.delete_message)
+                .setIcon(R.drawable.doit_icon)
+                .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
+                    viewModel.deletePost(clickedPost);
+                    adapter.getData().remove(position);
+                    adapter.notifyItemRemoved(position);
+                })
+                .setNegativeButton(getString(R.string.no), null)
+                .create()
+                .show();
     }
 
     @Override

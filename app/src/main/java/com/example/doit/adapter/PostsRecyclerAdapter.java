@@ -2,14 +2,19 @@ package com.example.doit.adapter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.doit.R;
@@ -86,23 +91,28 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        private ImageView imageView;
+        private LinearLayout answersAndVote;
+        private ImageView imageNickName, imageOptions;
         private TextView nickname;
         private TextView question;
-        private RadioButton answer1;
-        private RadioButton answer2;
-        private RadioButton answer3;
-        private RadioButton answer4;
+        private RadioGroup answersGroup;
+        private RadioButton answer1, answer2, answer3, answer4;
+        private Button voteButton;
+        private MenuItem deleteItem;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.image_cell_post);
+            answersAndVote = itemView.findViewById(R.id.answers_and_vote_layout);
+            imageNickName = itemView.findViewById(R.id.image_nickname_cell_post);
+            imageOptions = itemView.findViewById(R.id.options_image_cell_post);
             nickname = itemView.findViewById(R.id.nickname_cell_post);
             question = itemView.findViewById(R.id.question_cell_post);
+            answersGroup = itemView.findViewById(R.id.options_cell_post);
             answer1 = itemView.findViewById(R.id.answer1_cell_post);
             answer2 = itemView.findViewById(R.id.answer2_cell_post);
             answer3 = itemView.findViewById(R.id.answer3_cell_post);
             answer4 = itemView.findViewById(R.id.answer4_cell_post);
+            voteButton = itemView.findViewById(R.id.vote_cell_post);
 
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
@@ -110,10 +120,45 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                     listener.onItemClick(getAdapterPosition(), view, listData.get(getAdapterPosition()));
                 }
             });
+
+            voteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null) {
+                        assert listData != null;
+                        answersAndVote.setVisibility(View.GONE);
+                        listener.onVoteClick(getAdapterPosition(), view,  listData.get(getAdapterPosition()), answersGroup.getCheckedRadioButtonId());
+                    }
+                }
+            });
+
+            imageOptions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(listener != null) {
+                        assert listData != null;
+                        PopupMenu popupMenu = new PopupMenu(view.getContext(), imageOptions);
+                        ((Activity)view.getContext()).getMenuInflater().inflate(R.menu.menu_post, popupMenu.getMenu());
+
+                        popupMenu.show();
+
+                        deleteItem = popupMenu.getMenu().findItem(R.id.action_delete);
+                        deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                listener.onDeleteClick(getAdapterPosition(), item, listData.get(getAdapterPosition()));
+                                return false;
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 
     public static interface PostsRecyclerListener {
         void onItemClick(int position, View clickedView, QuestionPostData clickedPost);
+        void onVoteClick(int position, View clickedView, QuestionPostData clickedPost, int votedRadiobuttonID);
+        void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost);
     }
 }

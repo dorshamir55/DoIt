@@ -9,23 +9,54 @@
     <!--    app:contentPadding="10dp"-->
     <!--    android:layout_marginHorizontal="5dp">-->
     <!--    android:stateListAnimator="@drawable/card_state_animator_selector">-->
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="top"
+        android:background="@android:color/black"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_weight="7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start">
+            <TextView
+                android:id="@+id/question_cell_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/bubblegum_sans"
+                android:text="Question"
+                android:gravity="start"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+            <ImageView
+                android:id="@+id/options_image_cell_post"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_options"
+                android:gravity="end"/>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/question_cell_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="@font/bubblegum_sans"
-            android:text="Question"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -38,7 +69,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/image_cell_post"
+                android:id="@+id/image_nickname_cell_post"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
@@ -64,6 +95,7 @@
             android:layout_height="0.5dp"
             android:background="@color/toolbarColorLight"/>
         <LinearLayout
+            android:id="@+id/answers_and_vote_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -110,8 +142,8 @@
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="0.5dp"
         android:layout_gravity="bottom"
-        android:background="@color/toolbarColor"/>
+        android:background="@android:color/black"/>
 
 </androidx.cardview.widget.CardView>

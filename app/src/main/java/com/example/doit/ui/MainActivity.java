@@ -238,8 +238,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchItem.setVisible(false);
+
         return true;
     }
 }

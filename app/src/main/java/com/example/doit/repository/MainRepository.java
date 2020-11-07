@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.example.doit.db.AdDAO;
 import com.example.doit.db.AppDatabase;
 import com.example.doit.model.AnswerFireStore;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
@@ -79,6 +80,11 @@ public class MainRepository implements IMainRepository{
     @Override
     public void getListOfAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions) {
         remoteDataSource.fetchAnswers(consumerList, answerInQuestions);
+    }
+
+    @Override
+    public void vote(String id, List<AnswerInPost> answersInPost, int votedPosition, Runnable onFinish) {
+        remoteDataSource.vote(id, answersInPost, votedPosition, onFinish);
     }
 
     private void doAsynch(Runnable task) {

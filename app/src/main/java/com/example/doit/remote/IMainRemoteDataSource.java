@@ -1,6 +1,7 @@
 package com.example.doit.remote;
 
 import com.example.doit.model.AnswerFireStore;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
@@ -14,4 +15,5 @@ public interface IMainRemoteDataSource {
     public void removePost(String id, Runnable onFinish);
     public void fetchAllQuestions(Consumer<List<QuestionFireStore>> consumerList);
     public void fetchAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions);
+    public void vote(String id, List<AnswerInPost> answersInPost, int votedPosition, Runnable onFinish);
 }

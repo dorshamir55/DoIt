@@ -3,6 +3,7 @@ package com.example.doit.viewmodel;
 import androidx.lifecycle.LiveData;
 
 import com.example.doit.model.AnswerFireStore;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
@@ -16,5 +17,6 @@ public interface IMainViewModel {
     public void deletePost(QuestionPostData questionPostData);
     public void getListOfQuestions(Consumer<List<QuestionFireStore>> consumerList);
     public void getListOfAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions);
+    public void vote(String id, List<AnswerInPost> answersInPost, int votedPosition);
 }
 

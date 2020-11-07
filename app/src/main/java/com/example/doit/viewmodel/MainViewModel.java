@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.doit.model.AnswerFireStore;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
@@ -54,5 +55,13 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     @Override
     public void getListOfAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions) {
         mainRepository.getListOfAnswers(consumerList, answerInQuestions);
+    }
+
+    @Override
+    public void vote(String id, List<AnswerInPost> answersInPost, int votedPosition) {
+        mainRepository.vote(id, answersInPost, votedPosition, () -> {
+            LocalBroadcastManager.getInstance(getApplication().getApplicationContext())
+                    .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
+        });
     }
 }

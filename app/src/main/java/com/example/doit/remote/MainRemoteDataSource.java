@@ -1,10 +1,16 @@
 package com.example.doit.remote;
 
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
 import com.example.doit.model.AnswerFireStore;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -111,6 +117,28 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
 
                     if(consumerList != null)
                         consumerList.apply(data);
+                });
+    }
+
+    @Override
+    public void vote(String id, List<AnswerInPost> answersInPost, int votedPosition, Runnable onFinish) {
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("votes", 1);
+//        data.put("removed", true);
+        answersInPost.get(votedPosition).setVotes(answersInPost.get(votedPosition).getVotes()+1);
+        db.collection(QuestionPostData.TABLE_NAME).document(id).update("answers", answersInPost)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+//                        if(onFinish != null)
+//                            onFinish.run();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
                 });
     }
 }
