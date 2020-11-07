@@ -88,4 +88,8 @@ dependencies {
 
     //Paper
     implementation 'io.paperdb:paperdb:2.5'
+
+    //MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }
