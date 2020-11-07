@@ -145,7 +145,7 @@ public class HomeFragment extends Fragment {
 
     private void vote(QuestionPostData clickedPost, int answerVoted){
         //clickedPost.getAnswers().get(answerPosition).setVotes(clickedPost.getAnswers().get(answerPosition).getVotes() + 1);
-        viewModel.vote(clickedPost.getId(), clickedPost.getAnswers(), answerVoted);
+        viewModel.voteOnPost(clickedPost.getId(), clickedPost.getAnswers(), answerVoted);
     }
 
     private void deletePost(int position, QuestionPostData clickedPost){

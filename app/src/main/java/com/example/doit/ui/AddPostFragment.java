@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -119,6 +120,7 @@ public class AddPostFragment extends Fragment {
                 fragmentTransaction.replace(R.id.nav_host_fragment, chooseAnswerFragment).commit();
 //                fragmentTransaction.addToBackStack(null);
 //                fragmentTransaction.commit();
+//                replaceFragment(new ChooseAnswersFragment(), getParentFragmentManager());
             }
         });
 
@@ -174,5 +176,18 @@ public class AddPostFragment extends Fragment {
                 return  false;
             }
         });
+    }
+
+    private void replaceFragment (Fragment fragment, FragmentManager manager){
+        String backStateName = fragment.getClass().getName();
+
+        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+        if (!fragmentPopped){ //fragment not in back stack, create it.
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.nav_host_fragment, fragment);
+            ft.addToBackStack(backStateName);
+            ft.commit();
+        }
     }
 }

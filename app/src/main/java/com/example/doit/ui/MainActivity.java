@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -57,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
 //        postQuestion(new QuestionPostData("22", question,  answers, Calendar.getInstance().getTime()));
 
         manager = getSupportFragmentManager();
-
         manager.beginTransaction().add(R.id.nav_host_fragment, new HomeFragment()).commit();
+
+//        replaceFragment (new HomeFragment());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.getMenu().findItem(R.id.nav_settings).setOnMenuItemClickListener(menuItem -> {
             drawer.closeDrawer(navigationView);
-            switchToSettings();
+            replaceFragment(new SettingsFragment());
             return false;
         });
 
@@ -85,17 +87,18 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_home:
-                        switchToHomeFragment();
-
+//                        switchToHomeFragment();
+                            replaceFragment(new HomeFragment());
                         break;
 
                     case R.id.action_search:
-                        switchToHomeFragment();
+//                        switchToHomeFragment();
 
                         break;
 
                     case R.id.action_add:
-                        switchToAddPostFragment();
+//                        switchToAddPostFragment();
+                        replaceFragment(new AddPostFragment());
                         break;
 
                     case R.id.action_statistics:
@@ -103,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.action_profile:
-                        switchToProfileFragment();
-
+//                        switchToProfileFragment();
+                            replaceFragment(new MyProfileFragment());
                         break;
                 }
                 return true;
@@ -114,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
 
         // which items considered as "top items" - will have a drawer icon instead of
         // back icon.
@@ -158,25 +160,39 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
-    public void switchToHomeFragment() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
+    private void replaceFragment (Fragment fragment){
+        String backStateName = fragment.getClass().getName();
+
+        FragmentManager manager = getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+        
+        if (!fragmentPopped){ //fragment not in back stack, create it.
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.nav_host_fragment, fragment);
+            ft.addToBackStack(backStateName);
+            ft.commit();
+        }
     }
 
-    public void switchToProfileFragment() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment()).commit();
-    }
-
-    public void switchToAddPostFragment() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment(), "AddPostFragment").commit();
-    }
-
-    public void switchToStatisticsFragment() {
-        //manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment()).commit();
-    }
-
-    private void switchToSettings() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment, new SettingsFragment()).commit();
-    }
+//    public void switchToHomeFragment() {
+//        manager.beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
+//    }
+//
+//    public void switchToProfileFragment() {
+//        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment()).commit();
+//    }
+//
+//    public void switchToAddPostFragment() {
+//        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment(), "AddPostFragment").commit();
+//    }
+//
+//    public void switchToStatisticsFragment() {
+//        //manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment()).commit();
+//    }
+//
+//    private void switchToSettings() {
+//        manager.beginTransaction().replace(R.id.nav_host_fragment, new SettingsFragment()).commit();
+//    }
 
     private void logout() {
         new AlertDialog.Builder(this)
@@ -189,29 +205,6 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.no), null)
                 .create()
                 .show();
-    }
-
-    private void postQuestion(QuestionPostData postData) {
-        FirebaseFirestore.getInstance().collection(QuestionPostData.TABLE_NAME)
-                .add(postData)
-                .addOnSuccessListener(docRef -> {
-                    LocalBroadcastManager.getInstance(getApplicationContext())
-                            .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
-                    //stopSelf();
-                })
-                .addOnFailureListener(ex -> {
-                    ex.printStackTrace();
-                    showMessageAndFinish("Something wrong");
-                });
-    }
-
-    private void showMessageAndFinish(String msg) {
-        try {
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-            //stopSelf();
-        } catch(Throwable t) {
-            t.printStackTrace();
-        }
     }
 
     @Override

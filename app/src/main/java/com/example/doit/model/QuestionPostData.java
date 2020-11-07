@@ -38,6 +38,8 @@ public class QuestionPostData {
 
     private boolean isRemoved;
 
+    private boolean isVoted;
+
     public QuestionPostData() {
     }
 
@@ -46,6 +48,7 @@ public class QuestionPostData {
         this.question = question;
         this.answers = answers;
         this.isRemoved = false;
+        this.isVoted = false;
     }
 
     public <T extends QuestionPostData> T withId(String id) {
@@ -101,5 +104,13 @@ public class QuestionPostData {
 
     public void setRemoved(boolean removed) {
         isRemoved = removed;
+    }
+
+    public boolean isVoted() {
+        return isVoted;
+    }
+
+    public void setVoted(boolean voted) {
+        isVoted = voted;
     }
 }
