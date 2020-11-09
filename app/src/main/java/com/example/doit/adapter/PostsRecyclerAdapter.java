@@ -49,6 +49,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     private List<QuestionPostData> listData;
     private PostsRecyclerListener listener;
     private LocalHelper localHelper;
+    private PieChartHelper pieChartHelper;
     private Activity activity;
     private String currentLanguage;
 
@@ -84,10 +85,18 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     //Will be call for every item..
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         assert listData != null;
+
+        pieChartHelper = new PieChartHelper(listData.get(position).getAnswers());
+
         holder.nickname.setText(listData.get(position).getPostedUserId());
 //        holder.nickname.setText("Lionel Messi");
         holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));
-        if(!alreadyVoted(position) && !isItMyPost(position)) {
+
+        if(pieChartHelper.getSumOfVotes() == 0 && isItMyPost(position)){
+            holder.answersAndVote.setVisibility(View.GONE);
+            holder.noVotes.setVisibility(View.VISIBLE);
+        }
+        else if(!alreadyVoted(position) && !isItMyPost(position)) {
             holder.answer1.setText(listData.get(position).getAnswers().get(0).getTextByLanguage(currentLanguage));
             holder.answer2.setText(listData.get(position).getAnswers().get(1).getTextByLanguage(currentLanguage));
             holder.answer3.setText(listData.get(position).getAnswers().get(2).getTextByLanguage(currentLanguage));
@@ -116,7 +125,6 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     private void showResults(RecyclerViewHolder holder, int position) {
         int i=0;
         holder.answersAndVote.setVisibility(View.GONE);
-        PieChartHelper pieChartHelper = new PieChartHelper(listData.get(position).getAnswers());
         List<PieEntry> pieEntries = new ArrayList<>();
 
         for(AnswerInPost answerInPost : listData.get(position).getAnswers()){
@@ -197,8 +205,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         private LinearLayout answersAndVote;
         private PieChart pieChart;
         private ImageView imageNickName, imageOptions;
-        private TextView nickname;
-        private TextView question;
+        private TextView nickname, question, noVotes;
         private RadioGroup answersGroup;
         private RadioButton answer1, answer2, answer3, answer4;
         private Button voteButton;
@@ -212,6 +219,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             imageOptions = itemView.findViewById(R.id.options_image_cell_post);
             nickname = itemView.findViewById(R.id.nickname_cell_post);
             question = itemView.findViewById(R.id.question_cell_post);
+            noVotes = itemView.findViewById(R.id.no_votes);
             answersGroup = itemView.findViewById(R.id.options_cell_post);
             answer1 = itemView.findViewById(R.id.answer1_cell_post);
             answer2 = itemView.findViewById(R.id.answer2_cell_post);
@@ -249,6 +257,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                         popupMenu.show();
 
                         deleteItem = popupMenu.getMenu().findItem(R.id.action_delete);
+                        if(!isItMyPost(getAdapterPosition()))
+                            deleteItem.setVisible(false);
                         deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem item) {

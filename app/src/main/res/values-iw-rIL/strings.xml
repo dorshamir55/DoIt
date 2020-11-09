@@ -62,4 +62,5 @@
     <string name="hours">שעות</string>
     <string name="minutes">דקות</string>
     <string name="not_enough_time_message">אנא מלא את זמן ההודעה!</string>
+    <string name="no_votes">אין עדיין הצבעות</string>
 </resources>
