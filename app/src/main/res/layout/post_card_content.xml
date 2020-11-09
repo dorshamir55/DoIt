@@ -21,11 +21,29 @@
         android:layout_margin="10dp">
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+            <TextView
+                android:id="@+id/remaining_time"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"/>
+            <ImageView
+                android:id="@+id/options_image_cell_post"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_options"
+                android:gravity="end"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_weight="7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="start">
@@ -40,20 +58,6 @@
                 android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="end">
-            <ImageView
-                android:id="@+id/options_image_cell_post"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_options"
-                android:gravity="end"/>
             </LinearLayout>
 
         </LinearLayout>
