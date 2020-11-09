@@ -86,15 +86,17 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         assert listData != null;
         holder.nickname.setText(listData.get(position).getPostedUserId());
 //        holder.nickname.setText("Lionel Messi");
-        holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));
-        holder.answer1.setText(listData.get(position).getAnswers().get(0).getTextByLanguage(currentLanguage));
-        holder.answer2.setText(listData.get(position).getAnswers().get(1).getTextByLanguage(currentLanguage));
-        holder.answer3.setText(listData.get(position).getAnswers().get(2).getTextByLanguage(currentLanguage));
-        holder.answer4.setText(listData.get(position).getAnswers().get(3).getTextByLanguage(currentLanguage));
-
+        if(!alreadyVoted(position) && !isItMyPost(position)) {
+            holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));
+            holder.answer1.setText(listData.get(position).getAnswers().get(0).getTextByLanguage(currentLanguage));
+            holder.answer2.setText(listData.get(position).getAnswers().get(1).getTextByLanguage(currentLanguage));
+            holder.answer3.setText(listData.get(position).getAnswers().get(2).getTextByLanguage(currentLanguage));
+            holder.answer4.setText(listData.get(position).getAnswers().get(3).getTextByLanguage(currentLanguage));
+        }
+        else{
         //Show statistics
         showResults(holder, position);
-
+        }
 
 //        if(listData.get(position).getImagesURL() != null) {
 //            Glide.with(holder.imageView.getContext())
