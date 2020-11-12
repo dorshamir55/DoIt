@@ -89,10 +89,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
         pieChartHelper = new PieChartHelper(listData.get(position).getAnswers());
 
-//        long time = listData.get(position).getUpdateDate().getTime();
-//        Date date = new Date(time);
-//        holder.nickname.setText(date.toString());
-        holder.nickname.setText(String.valueOf(listData.get(position).getUpdateDate()));
+        String hours = String.valueOf(listData.get(position).getUpdateDate().getHours());
+        String minutes = String.valueOf(listData.get(position).getUpdateDate().getMinutes());
+        String seconds = String.valueOf(listData.get(position).getUpdateDate().getSeconds());
+        String date = hours+":"+minutes+":"+seconds;
+        holder.nickname.setText(date);
+//        holder.nickname.setText(listData.get(position).getUpdateDate().toString());
 //        holder.nickname.setText(currentUser.getDisplayName());
         holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));
 
