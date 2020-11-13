@@ -15,6 +15,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.example.doit.R;
+import com.example.doit.model.UserData;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpFragment extends Fragment {
 

@@ -28,13 +28,18 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.UserData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +53,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference ref = database.getReference("server/saving-data/fireblog");
+//        DatabaseReference usersRef = ref.child("users");
+//
+//        Map<String, UserData> users = new HashMap<>();
+//        users.put("Lala", new UserData("Ronaldo", "dor123@321.com"));
+//
+//        usersRef.setValue(users);
 
 //        Question question = new Question("2", "What is it your favorite color?");
 //        ArrayList<Answer> answers = new ArrayList<>();

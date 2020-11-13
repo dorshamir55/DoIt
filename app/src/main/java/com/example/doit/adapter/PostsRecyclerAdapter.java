@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +37,11 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +50,9 @@ import java.util.List;
 public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdapter.RecyclerViewHolder> {
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference("server/saving-data/fireblog");
+    DatabaseReference timeRef = ref.child("time_left_posts");
     private double NO_VOTES = 0.0;
 
     @Nullable
@@ -89,13 +98,31 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
         pieChartHelper = new PieChartHelper(listData.get(position).getAnswers());
 
-        String hours = String.valueOf(listData.get(position).getUpdateDate().getHours());
-        String minutes = String.valueOf(listData.get(position).getUpdateDate().getMinutes());
-        String seconds = String.valueOf(listData.get(position).getUpdateDate().getSeconds());
-        String date = hours+":"+minutes+":"+seconds;
-        holder.nickname.setText(date);
+//        String hours = String.valueOf(listData.get(position).getUpdateDate().getHours());
+//        String minutes = String.valueOf(listData.get(position).getUpdateDate().getMinutes());
+//        String seconds = String.valueOf(listData.get(position).getUpdateDate().getSeconds());
+//        String date = hours+":"+minutes+":"+seconds;
+//        holder.nickname.setText(date);
 //        holder.nickname.setText(listData.get(position).getUpdateDate().toString());
-//        holder.nickname.setText(currentUser.getDisplayName());
+        holder.webView.requestFocus();
+        holder.webView.getSettings().setJavaScriptEnabled(true);
+        holder.webView.getSettings().setGeolocationEnabled(true);
+        holder.webView.loadData("<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\"></p><script>var countDownDate = new Date(\"Nov 14, 2021 14:46:25\").getTime();var x = setInterval(function() {  var now = new Date().getTime();  var distance = countDownDate - now;  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  document.getElementById(\"demo\").innerHTML = hours + \"h \"  + minutes + \"m \" + seconds + \"s \";  if (distance < 0) {    clearInterval(x);    document.getElementById(\"demo\").innerHTML = \"EXPIRED\";  }}, 1000);</script></body></html>",
+                "text/html", "UTF-8");
+        timeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String time = dataSnapshot.getValue().toString();
+                holder.webView.loadData(time, "text/html", "UTF-8");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        holder.nickname.setText(currentUser.getDisplayName());
         holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));
 
         if(pieChartHelper.getSumOfVotes() == 0 && isItMyPost(position)){
@@ -110,8 +137,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             holder.answer4.setText(listData.get(position).getAnswers().get(3).getTextByLanguage(currentLanguage));
         }
         else{
-        //Show statistics
-        showResults(holder, position);
+            //Show statistics
+            showResults(holder, position);
         }
 
 //        if(listData.get(position).getImagesURL() != null) {
@@ -211,6 +238,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
     {
         private LinearLayout answersAndVote;
         private PieChart pieChart;
+        private WebView webView;
         private ImageView imageNickName, imageOptions;
         private TextView nickname, question, noVotes;
         private RadioGroup answersGroup;
@@ -221,6 +249,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             pieChart = itemView.findViewById(R.id.barChar);
+            webView = itemView.findViewById(R.id.time_left);
             answersAndVote = itemView.findViewById(R.id.answers_and_vote_layout);
             imageNickName = itemView.findViewById(R.id.image_nickname_cell_post);
             imageOptions = itemView.findViewById(R.id.options_image_cell_post);
