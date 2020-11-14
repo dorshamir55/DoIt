@@ -65,43 +65,52 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
-            <ImageView
-                android:id="@+id/image_nickname_cell_post"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/doit_icon"
-                android:contentDescription="user_image"
-                android:layout_marginEnd="3dp"/>
-
-            <TextView
-                android:id="@+id/nickname_cell_post"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="2"
-                android:fontFamily="@font/caveat_brush"
-                android:maxLines="1"
-                android:gravity="start"
-                android:layout_gravity="center"
-                android:text="Nickname"
-                android:textColor="#ab2030"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <WebView
-                android:id="@+id/time_left"
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:gravity="end"
-                android:layout_marginEnd="5dp"
-                tools:ignore="WebViewLayout" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="start">
+                <ImageView
+                    android:id="@+id/image_nickname_cell_post"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/doit_icon"
+                    android:contentDescription="user_image"
+                    android:layout_marginEnd="3dp"/>
 
+                <TextView
+                    android:id="@+id/nickname_cell_post"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:fontFamily="@font/caveat_brush"
+                    android:maxLines="1"
+                    android:gravity="start"
+                    android:layout_gravity="center"
+                    android:text="Nickname"
+                    android:textColor="#ab2030"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="end">
+                <WebView
+                    android:id="@+id/time_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:gravity="end"
+                    tools:ignore="WebViewLayout" />
+            </LinearLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
