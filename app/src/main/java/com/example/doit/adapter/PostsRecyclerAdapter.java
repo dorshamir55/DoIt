@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -103,17 +104,30 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 //        String seconds = String.valueOf(listData.get(position).getUpdateDate().getSeconds());
 //        String date = hours+":"+minutes+":"+seconds;
 //        holder.nickname.setText(date);
-//        holder.nickname.setText(listData.get(position).getUpdateDate().toString());
+//        holder.nickname.setText(listData.get(position).getEndingPostDate().toString());
         holder.webView.requestFocus();
         holder.webView.getSettings().setJavaScriptEnabled(true);
         holder.webView.getSettings().setGeolocationEnabled(true);
-        holder.webView.loadData("<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\"></p><script>var countDownDate = new Date(\"Nov 14, 2021 14:46:25\").getTime();var x = setInterval(function() {  var now = new Date().getTime();  var distance = countDownDate - now;  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  document.getElementById(\"demo\").innerHTML = hours + \"h \"  + minutes + \"m \" + seconds + \"s \";  if (distance < 0) {    clearInterval(x);    document.getElementById(\"demo\").innerHTML = \"EXPIRED\";  }}, 1000);</script></body></html>",
+
+        String postEnding = listData.get(position).getEndingPostDate().toString();
+        String hours, hoursText, minutes, minutesText, seconds, secondsText;
+        hoursText = activity.getResources().getString(R.string.hours);
+        minutesText = activity.getResources().getString(R.string.minutes);
+        secondsText = activity.getResources().getString(R.string.seconds);
+//        hours = String.valueOf(listData.get(position).getEndingPostDate().getHours());
+//        minutes = String.valueOf(listData.get(position).getEndingPostDate().getMinutes());
+//        seconds = String.valueOf(listData.get(position).getEndingPostDate().getSeconds());
+        holder.webView.loadData("<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\" style=\"margin:0px; font-size:40%;\"></p><script>var countDownDate = new Date(\""+postEnding+"\").getTime();var x = setInterval(function() {  var now = new Date().getTime();  var distance = countDownDate - now;  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  document.getElementById(\"demo\").innerHTML = hours + \" "+hoursText+" \"  + minutes + \" "+minutesText+" \" + seconds + \" "+secondsText+" \";  if (distance < 0) {    clearInterval(x);    document.getElementById(\"demo\").innerHTML = \"EXPIRED\";  }}, 1000);</script></body></html>",
                 "text/html", "UTF-8");
         timeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String time = dataSnapshot.getValue().toString();
                 holder.webView.loadData(time, "text/html", "UTF-8");
+                if(holder.webView.getTitle().equals("EXPIRED")){
+                    Toast.makeText(activity, "EXPIRED", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override
@@ -121,6 +135,10 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
 
             }
         });
+
+        if(holder.webView.equals("EXPIRED")){
+            Toast.makeText(activity, "EXPIRED", Toast.LENGTH_SHORT).show();
+        }
 
         holder.nickname.setText(currentUser.getDisplayName());
         holder.question.setText(listData.get(position).getQuestion().getTextByLanguage(currentLanguage));

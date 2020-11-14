@@ -36,6 +36,8 @@ public class QuestionPostData {
     @ServerTimestamp
     private Date updateDate;  // update (also created) date - from Firebase
 
+    private Date endingPostDate;  // ending post date
+
     private boolean isRemoved;
 
     private boolean isVoted;
@@ -43,12 +45,13 @@ public class QuestionPostData {
     public QuestionPostData() {
     }
 
-    public QuestionPostData(String postedUserId, QuestionInPost question, List<AnswerInPost> answers) {
+    public QuestionPostData(String postedUserId, QuestionInPost question, List<AnswerInPost> answers, Date endingPostDate) {
         this.postedUserId = postedUserId;
         this.question = question;
         this.answers = answers;
         this.isRemoved = false;
         this.isVoted = false;
+        this.endingPostDate = endingPostDate;
     }
 
     public <T extends QuestionPostData> T withId(String id) {
@@ -96,6 +99,14 @@ public class QuestionPostData {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Date getEndingPostDate() {
+        return endingPostDate;
+    }
+
+    public void setEndingPostDate(Date endingPostDate) {
+        this.endingPostDate = endingPostDate;
     }
 
     public boolean isRemoved() {

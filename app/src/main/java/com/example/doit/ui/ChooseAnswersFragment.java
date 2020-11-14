@@ -182,8 +182,8 @@ public class ChooseAnswersFragment extends Fragment {
 //                bundleToService.putParcelable("answers", (Parcelable) checkedAnswersList);
                 intent.putExtra("question", question);
                 intent.putExtra("answers", (ArrayList<AnswerFireStore>)checkedAnswersList);
-                intent.putExtra("hours", "");
-                intent.putExtra("minutes", "");
+                intent.putExtra("hours", hours);
+                intent.putExtra("minutes", minutes);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                     getActivity().startForegroundService(intent);

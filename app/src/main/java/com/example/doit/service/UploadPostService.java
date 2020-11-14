@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -30,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +68,18 @@ public class UploadPostService extends Service
             answersList.add(new AnswerInPost(answer.getAnswerID(), answer.getEn(), answer.getHe(), new ArrayList<>()));
         }
 
-        final QuestionPostData data = new QuestionPostData(currentUser.getUid(), question, answersList);
+        int hours = intent.getIntExtra("hours", 1);
+        int minutes = intent.getIntExtra("minutes", 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Calendar.getInstance().getTime());
+        calendar.add(Calendar.HOUR, hours);
+        calendar.add(Calendar.MINUTE, minutes);
+        Date endDate = calendar.getTime();
+
+        Log.d("TAG", endDate.toString());
+
+        final QuestionPostData data = new QuestionPostData(currentUser.getUid(), question, answersList, endDate);
         postQuestion(data);
         return Service.START_NOT_STICKY;
     }
