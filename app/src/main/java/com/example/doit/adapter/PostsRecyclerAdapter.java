@@ -119,13 +119,14 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         holder.webView.addJavascriptInterface(webAppInterface, "Android");
 
         String postEnding = listData.get(position).getEndingPostDate().toString();
-        String hoursText, minutesText, secondsText;
+        String hoursText, minutesText, secondsText, closed;
         hoursText = activity.getResources().getString(R.string.hours);
         minutesText = activity.getResources().getString(R.string.minutes);
         secondsText = activity.getResources().getString(R.string.seconds);
-
-        String script = "<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\" style=\"margin:0px; font-size:40%;\"></p><script>function saveFunction(text) {   Android.storeText(text);   }</script><script> var countDownDate = new Date(\""+postEnding+"\").getTime();var x = setInterval(function() {  var now = new Date().getTime();  var distance = countDownDate - now;  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  document.getElementById(\"demo\").innerHTML = hours + \" "+hoursText+" \"  + minutes + \" "+minutesText+" \" + seconds + \" "+secondsText+" \";  if (distance < 0) {    clearInterval(x);    document.getElementById(\"demo\").innerHTML = \"EXPIRED\";    saveFunction(\"EXPIRED\");  }}, 1000);</script></body></html>";
+        closed = activity.getResources().getString(R.string.closed);
+        String script = "<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\" style=\"margin:0px; font-size:50%;\"></p><script>function saveFunction(text) {   Android.storeText(text);   }</script><script> var countDownDate = new Date(\""+postEnding+"\").getTime();var x = setInterval(function() {  var now = new Date().getTime();  var distance = countDownDate - now;  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  var seconds = Math.floor((distance % (1000 * 60)) / 1000);  document.getElementById(\"demo\").innerHTML = hours + \" "+hoursText+" \"  + minutes + \" "+minutesText+" \" + seconds + \" "+secondsText+" \";  if (distance < 0) {    clearInterval(x);    document.getElementById(\"demo\").innerHTML = \""+closed+"\";    saveFunction(\""+closed+"\");  }}, 1000);</script></body></html>";
         holder.webView.loadData(script,"text/html", "UTF-8");
+
 
 //        timeRef.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -350,8 +351,9 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         @JavascriptInterface
         public void storeText(String text)
         {
+            String closed = activity.getResources().getString(R.string.closed);
             this.data=text;
-            if(data.equals("EXPIRED")){
+            if(data.equals(closed)){
                 //TODO: Post time is over...
                 Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
             }

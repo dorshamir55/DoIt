@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
+import android.os.LocaleList;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,9 +24,14 @@ import java.util.Locale;
 
 public class LocalHelper {
     private Activity activity;
+    private Context context;
 
     public LocalHelper(Activity activity) {
         this.activity = activity;
+    }
+
+    public LocalHelper(Context context) {
+        this.context = context;
     }
 
     public void saveLocale(String lang) {
@@ -36,7 +44,8 @@ public class LocalHelper {
 
     public void loadLocale() {
         String language = getLocale();
-        if(language.equals("he"))
+        Log.d("TAG_GET_LOCALE", language);
+//        if(language.equals("he"))
             activity.getWindow().getDecorView().setLayoutDirection(
                     language.equals("he") ?
                             View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
@@ -47,9 +56,9 @@ public class LocalHelper {
     public void setLocale(String lang) {
 
         Locale locale = new Locale(lang);
-        Configuration config = new Configuration();
-        config.locale = locale;
         Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
 
         activity.getResources().updateConfiguration(config, activity.getResources().getDisplayMetrics());
     }
@@ -57,6 +66,12 @@ public class LocalHelper {
     public String getLocale() {
         String langPref = "Language";
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        return prefs.getString(langPref, "he");
+        return prefs.getString(langPref, "en");
+    }
+
+    public String getLocaleLang() {
+        String langPref = "Language";
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(langPref, "en");
     }
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,7 @@ public class AddPostFragment extends Fragment {
     private List<QuestionFireStore> currentQuestionsList, allQuestionsList;
     private SearchView searchView;
     private MenuItem searchItem;
+    private String currentLanguage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class AddPostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        localHelper = new LocalHelper(getActivity());
+        currentLanguage = localHelper.getLocale();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_post, container, false);
     }
@@ -66,13 +70,14 @@ public class AddPostFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         searchItem.setVisible(false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        localHelper = new LocalHelper(getActivity());
+
         Consumer<List<QuestionFireStore>> consumerList = new Consumer<List<QuestionFireStore>>() {
             @Override
             public void apply(List<QuestionFireStore> questionsList) {
@@ -89,10 +94,10 @@ public class AddPostFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-
+        Log.d("TAG_ADD_POST", localHelper.getLocale());
         categoryS = view.findViewById(R.id.choose_category_spinner);
 
-        String[] categoryArray = getResources().getStringArray(R.array.category_list);
+        String[] categoryArray = getActivity().getResources().getStringArray(R.array.category_list);
         List<String> categoryList = new ArrayList<>(Arrays.asList(categoryArray));
         Collections.sort(categoryList); //planetsArray will be sorted
         String chooseCategory = getResources().getString(R.string.choose_category);
@@ -131,10 +136,7 @@ public class AddPostFragment extends Fragment {
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 if(allQuestionsList != null) {
                     if (position != 0)
-                        if (localHelper.getLocale().equals("en"))
-                            currentQuestionsList = allQuestionsList.stream().filter(question -> question.getEn().getCategory().equals(selectedItem)).collect(Collectors.toList());
-                        else
-                            currentQuestionsList = allQuestionsList.stream().filter(question -> question.getHe().getCategory().equals(selectedItem)).collect(Collectors.toList());
+                        currentQuestionsList = allQuestionsList.stream().filter(question -> question.getCategoryByLanguage(currentLanguage).equals(selectedItem)).collect(Collectors.toList());
                     else
                         currentQuestionsList = new ArrayList<>(allQuestionsList);
 

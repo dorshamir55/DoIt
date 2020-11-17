@@ -42,6 +42,8 @@ public class QuestionPostData {
 
     private boolean isVoted;
 
+    private boolean isPostTimeOver;
+
     public QuestionPostData() {
     }
 
@@ -51,6 +53,7 @@ public class QuestionPostData {
         this.answers = answers;
         this.isRemoved = false;
         this.isVoted = false;
+        this.isPostTimeOver = false;
         this.endingPostDate = endingPostDate;
     }
 
@@ -123,5 +126,13 @@ public class QuestionPostData {
 
     public void setVoted(boolean voted) {
         isVoted = voted;
+    }
+
+    public boolean isPostTimeOver() {
+        return isPostTimeOver;
+    }
+
+    public void setPostTimeOver(boolean postTimeOver) {
+        isPostTimeOver = postTimeOver;
     }
 }

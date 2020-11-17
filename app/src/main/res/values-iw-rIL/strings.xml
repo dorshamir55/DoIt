@@ -66,4 +66,5 @@
     <string name="continue_with_google">המשך עם גוגל</string>
     <string name="hours">שעות</string>
     <string name="seconds">שניות</string>
+    <string name="closed">נסגר</string>
 </resources>

@@ -6,7 +6,7 @@ import com.esotericsoftware.kryo.NotNull;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 @IgnoreExtraProperties  // For Firebase deserialization
-public class QuestionInPost implements LanguageConverter {
+public class QuestionInPost implements LanguageConverter, CategoryConverter {
 
     @NotNull
     private String questionID;
@@ -34,6 +34,18 @@ public class QuestionInPost implements LanguageConverter {
                 return getHe().getQuestionText();
             default:
                 return getEn().getQuestionText();
+        }
+    }
+
+    @Override
+    public String getCategoryByLanguage(String language) {
+        switch (language){
+            case "en":
+                return getEn().getCategory();
+            case "he":
+                return getHe().getCategory();
+            default:
+                return getEn().getCategory();
         }
     }
 

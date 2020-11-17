@@ -14,6 +14,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -27,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doit.R;
+import com.example.doit.model.ContextWrapper;
+import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        LocalHelper localHelper = new LocalHelper(this);
+//        localHelper.loadLocale();
 
 //        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        DatabaseReference ref = database.getReference("server/saving-data/fireblog");
@@ -239,6 +246,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         auth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+
+        LocalHelper localHelper = new LocalHelper(newBase);
+        Locale newLocale = new Locale(localHelper.getLocaleLang());
+        // .. create or get your new Locale object here.
+
+        Context context = ContextWrapper.wrap(newBase, newLocale);
+        super.attachBaseContext(context);
     }
 
     @Override
