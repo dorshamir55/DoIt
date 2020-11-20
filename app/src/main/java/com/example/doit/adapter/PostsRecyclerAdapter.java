@@ -132,7 +132,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         secondsText = activity.getResources().getString(R.string.seconds);
         closed = activity.getResources().getString(R.string.closed);
         if(listData.get(position).isPostTimeOver()){
-            String script = "<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\" style=\"margin:0px; font-size:50%;\"></p><script>document.getElementById(\"demo\").innerHTML = \""+closed+"\";    Android.incrementAnswerWins(\""+listData.get(position)+"\"); </script></body></html>";
+            String script = "<!DOCTYPE HTML><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"<style></style></head><body><p id=\"demo\" style=\"margin:0px; font-size:50%;\"></p><script>function updateWinner() {    Android.incrementAnswerWins(\""+position+"\");  } </script><script>document.getElementById(\"demo\").innerHTML = \""+closed+"\";   updateWinner(); </script></body></html>";
             holder.webView.loadData(script, "text/html", "UTF-8");
         }
         else {
@@ -390,12 +390,12 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         }
 
         @JavascriptInterface
-        public void incrementAnswerWins(QuestionPostData questionPostData){
+        public void incrementAnswerWins(int position){
             //TODO: Post time is over...
-//            IMainViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(MainViewModel.class);
+            IMainViewModel viewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(MainViewModel.class);
 //
-//            List<String> winners = questionPostData.calculateWinningAnswerID();
-//            viewModel.incrementAnswerWins(questionPostData.getQuestion().getQuestionID(), winners);
+            List<String> winners = listData.get(position).calculateWinningAnswerID();
+            viewModel.incrementAnswerWins(listData.get(position).getQuestion().getQuestionID(), winners);
 //             Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
         }
     }
