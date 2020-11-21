@@ -1,5 +1,6 @@
 package com.example.doit.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -44,20 +45,15 @@ import java.util.concurrent.Executor;
 import static android.content.ContentValues.TAG;
 
 public class GoogleFacebookLoginFragment extends Fragment {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private GoogleSignInClient mGoogleSignInClient;
+    private GoogleFacebookLoginFragmentClickListener listener;
 
     private Button facebookLogin;
     private SignInButton googleLogin;
-    private final int RC_SIGN_IN = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -77,13 +73,12 @@ public class GoogleFacebookLoginFragment extends Fragment {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(getContext(), gso);
         setGooglePlusButtonText(googleLogin, getResources().getString(R.string.continue_with_google));
 
         googleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                listener.onSignInGoogle(gso, null);
             }
         });
 
@@ -95,89 +90,105 @@ public class GoogleFacebookLoginFragment extends Fragment {
         });
     }
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
 
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-            // Signed in successfully, show authenticated UI.
-            firebaseAuthWithGoogle(account.getIdToken());
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            loginError();
+            listener = (GoogleFacebookLoginFragmentClickListener) context;
+        } catch(ClassCastException ex) {
+            throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
+                    " interface!");
         }
     }
 
-    private void loginError() {
-        Toast.makeText(getContext(), getResources().getString(R.string.signup_failed), Toast.LENGTH_SHORT).show();
+    public static interface GoogleFacebookLoginFragmentClickListener {
+        public void onSignInGoogle(GoogleSignInOptions googleSignInOptions, Runnable onFinish);
     }
 
-    private void moveToMainActivity() {
-        startActivity(new Intent(getActivity(), MainActivity.class));
-        getActivity().finish();
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-
-                            String email = mAuth.getCurrentUser().getEmail();
-                            String nickname = mAuth.getCurrentUser().getDisplayName();
-                            UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
-                            addUserToDB(userData);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            loginError();
-                        }
-                    }
-                });
-    }
-
-    private void isExistInDB(String email, Consumer<Boolean> consumer) {
-        db.collection("users").get()
-                .addOnCompleteListener(task -> {
-                    boolean isExist = false;
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                            if (document.toObject(UserData.class).getEmail().equals(email)) {
-                                isExist = true;
-                                break;
-                            }
-                        }
-                    } else {
-                        task.getException().printStackTrace();
-                    }
-                    if (consumer != null)
-                        consumer.apply(isExist);
-                });
-    }
+//    private void signIn() {
+//        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//        startActivityForResult(signInIntent, RC_SIGN_IN);
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+//        if (requestCode == RC_SIGN_IN) {
+//            // The Task returned from this call is always completed, no need to attach
+//            // a listener.
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            handleSignInResult(task);
+//        }
+//    }
+//
+//    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+//        try {
+//            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+//            Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+//            // Signed in successfully, show authenticated UI.
+//            firebaseAuthWithGoogle(account.getIdToken());
+//        } catch (ApiException e) {
+//            // The ApiException status code indicates the detailed failure reason.
+//            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+//            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+//            loginError();
+//        }
+//    }
+//
+//    private void loginError() {
+//        Toast.makeText(getContext(), getResources().getString(R.string.signup_failed), Toast.LENGTH_SHORT).show();
+//    }
+//
+//    private void moveToMainActivity() {
+//        startActivity(new Intent(getActivity(), MainActivity.class));
+//        getActivity().finish();
+//    }
+//
+//    private void firebaseAuthWithGoogle(String idToken) {
+//        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+//
+//        mAuth.signInWithCredential(credential)
+//                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            Log.d(TAG, "signInWithCredential:success");
+//
+//                            String email = mAuth.getCurrentUser().getEmail();
+//                            String nickname = mAuth.getCurrentUser().getDisplayName();
+//                            UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
+//                            addUserToDB(userData);
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+//                            loginError();
+//                        }
+//                    }
+//                });
+//    }
+//
+//    private void isExistInDB(String email, Consumer<Boolean> consumer) {
+//        db.collection("users").get()
+//                .addOnCompleteListener(task -> {
+//                    boolean isExist = false;
+//                    if (task.isSuccessful()) {
+//                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
+//                            if (document.toObject(UserData.class).getEmail().equals(email)) {
+//                                isExist = true;
+//                                break;
+//                            }
+//                        }
+//                    } else {
+//                        task.getException().printStackTrace();
+//                    }
+//                    if (consumer != null)
+//                        consumer.apply(isExist);
+//                });
+//    }
 
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
         // Find the TextView that is inside of the SignInButton and set its text
@@ -192,29 +203,29 @@ public class GoogleFacebookLoginFragment extends Fragment {
         }
     }
 
-    private void addUserToDB(UserData userData) {
-
-        assert userData.getId() != null;
-
-        Consumer<Boolean> isExist = new Consumer<Boolean>() {
-            @Override
-            public void apply(Boolean isUserExist) {
-                if(!isUserExist){
-                    db.collection("users")
-                            .document(userData.getId())
-                            .set(userData)
-                            .addOnSuccessListener(documentReference -> {
-                                moveToMainActivity();
-                            })
-                            .addOnFailureListener(exception -> {
-                                Toast.makeText(getContext(), "ERROR", Toast.LENGTH_SHORT).show();
-                            });
-                }
-                else{
-                    moveToMainActivity();
-                }
-            }
-        };
-        isExistInDB(userData.getEmail(), isExist);
-    }
+//    private void addUserToDB(UserData userData) {
+//
+//        assert userData.getId() != null;
+//
+//        Consumer<Boolean> isExist = new Consumer<Boolean>() {
+//            @Override
+//            public void apply(Boolean isUserExist) {
+//                if(!isUserExist){
+//                    db.collection("users")
+//                            .document(userData.getId())
+//                            .set(userData)
+//                            .addOnSuccessListener(documentReference -> {
+//                                moveToMainActivity();
+//                            })
+//                            .addOnFailureListener(exception -> {
+//                                Toast.makeText(getContext(), "ERROR", Toast.LENGTH_SHORT).show();
+//                            });
+//                }
+//                else{
+//                    moveToMainActivity();
+//                }
+//            }
+//        };
+//        isExistInDB(userData.getEmail(), isExist);
+//    }
 }
