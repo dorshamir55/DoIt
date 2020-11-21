@@ -11,6 +11,9 @@ public class UserData
     private String nickname;
     private String email;
 
+    public UserData() {
+    }
+
     public UserData(String nickname, String email) {
         this.nickname = nickname;
         this.email = email;

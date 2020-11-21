@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doit.R;
+import com.example.doit.model.Consumer;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.UserData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,8 +33,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import static android.content.ContentValues.TAG;
@@ -144,7 +150,6 @@ public class GoogleFacebookLoginFragment extends Fragment {
                             String email = mAuth.getCurrentUser().getEmail();
                             String nickname = mAuth.getCurrentUser().getDisplayName();
                             UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
-
                             addUserToDB(userData);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -152,6 +157,25 @@ public class GoogleFacebookLoginFragment extends Fragment {
                             loginError();
                         }
                     }
+                });
+    }
+
+    private void isExistInDB(String email, Consumer<Boolean> consumer) {
+        db.collection("users").get()
+                .addOnCompleteListener(task -> {
+                    boolean isExist = false;
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                            if (document.toObject(UserData.class).getEmail().equals(email)) {
+                                isExist = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        task.getException().printStackTrace();
+                    }
+                    if (consumer != null)
+                        consumer.apply(isExist);
                 });
     }
 
@@ -172,14 +196,25 @@ public class GoogleFacebookLoginFragment extends Fragment {
 
         assert userData.getId() != null;
 
-        db.collection("users")
-                .document(userData.getId())
-                .set(userData)
-                .addOnSuccessListener(documentReference -> {
+        Consumer<Boolean> isExist = new Consumer<Boolean>() {
+            @Override
+            public void apply(Boolean isUserExist) {
+                if(!isUserExist){
+                    db.collection("users")
+                            .document(userData.getId())
+                            .set(userData)
+                            .addOnSuccessListener(documentReference -> {
+                                moveToMainActivity();
+                            })
+                            .addOnFailureListener(exception -> {
+                                Toast.makeText(getContext(), "ERROR", Toast.LENGTH_SHORT).show();
+                            });
+                }
+                else{
                     moveToMainActivity();
-                })
-                .addOnFailureListener(exception -> {
-                    Toast.makeText(getContext(), "ERROR", Toast.LENGTH_SHORT).show();
-                });
+                }
+            }
+        };
+        isExistInDB(userData.getEmail(), isExist);
     }
 }
