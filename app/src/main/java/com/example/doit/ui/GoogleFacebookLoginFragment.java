@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,9 +48,6 @@ import static android.content.ContentValues.TAG;
 public class GoogleFacebookLoginFragment extends Fragment {
     private GoogleFacebookLoginFragmentClickListener listener;
 
-    private Button facebookLogin;
-    private SignInButton googleLogin;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,10 +64,11 @@ public class GoogleFacebookLoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        googleLogin = view.findViewById(R.id.sign_in_google);
-        facebookLogin = view.findViewById(R.id.sign_in_facebook);
+        SignInButton googleLogin = view.findViewById(R.id.sign_in_google);
+        Button facebookLogin = view.findViewById(R.id.sign_in_facebook);
+        ProgressBar loadingBar = view.findViewById(R.id.googleFacebookLoadingBar);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -78,14 +77,16 @@ public class GoogleFacebookLoginFragment extends Fragment {
         googleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onSignInGoogle(gso, null);
+                loadingBar.setVisibility(View.VISIBLE);
+                listener.onSignInGoogle(googleSignInOptions, () -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
 
         facebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                loadingBar.setVisibility(View.VISIBLE);
+                //TODO
             }
         });
     }
