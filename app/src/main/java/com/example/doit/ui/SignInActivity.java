@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,13 +27,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
@@ -105,8 +114,8 @@ public class SignInActivity extends AppCompatActivity
                             Log.d(TAG, "signInWithCredential:success");
 
                             String email = mAuth.getCurrentUser().getEmail();
-                            String nickname = mAuth.getCurrentUser().getDisplayName();
-                            UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
+//                            String nickname = mAuth.getCurrentUser().getDisplayName();
+                            UserData userData = new UserData("", email).withId(mAuth.getCurrentUser().getUid());
                             addUserToDB(userData);
 //                            moveToFirstSignInFragment();
                         } else {
@@ -183,10 +192,31 @@ public class SignInActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSignIn(Runnable onFinish) {
+    public void onSkip(Runnable onFinish) {
 //        String email = mAuth.getCurrentUser().getEmail();
 //        String nickname = mAuth.getCurrentUser().getDisplayName();
 //        UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
 //        addUserToDB(userData);
+        moveToMainActivity();
+    }
+
+    @Override
+    public void onImageAndNickname(String nickname, Runnable onFinish) {
+        String id = mAuth.getCurrentUser().getUid();
+        Map<String, Object> data = new HashMap<>();
+        data.put("nickName", nickname);
+        db.collection("users").document(id).set(data, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        moveToMainActivity();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

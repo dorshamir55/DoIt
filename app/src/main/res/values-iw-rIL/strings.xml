@@ -68,4 +68,7 @@
     <string name="seconds">שניות</string>
     <string name="closed">נסגר</string>
     <string name="save">שמור</string>
+    <string name="nickname">כינוי</string>
+    <string name="skip">דלג</string>
+    <string name="nickname_validation">כינוי לא יכול להיות ריק!</string>
 </resources>

@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.model.UserData;
@@ -21,7 +23,8 @@ public class FirstSignInFragment extends Fragment {
     public static final String TAG = "FIRST_SIGN_IN_FRG";
     private FirstSignInFragmentClickListener listener;
 
-    private Button save;
+    private Button saveButton, skipButton;
+    private EditText nicknameEditText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,12 +44,30 @@ public class FirstSignInFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ProgressBar loadingBar = view.findViewById(R.id.firstSignInLoadingBar);
-        save = view.findViewById(R.id.save_button);
-        save.setOnClickListener(new View.OnClickListener() {
+        nicknameEditText = view.findViewById(R.id.nickname_edit_text);
+
+        skipButton = view.findViewById(R.id.skip_button);
+        skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadingBar.setVisibility(View.VISIBLE);
-                listener.onSignIn(() -> loadingBar.setVisibility(View.INVISIBLE));
+                listener.onSkip(() -> loadingBar.setVisibility(View.INVISIBLE));
+            }
+        });
+
+        saveButton = view.findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nickname = nicknameEditText.getText().toString();
+                String message = getResources().getString(R.string.nickname_validation);
+
+                if(nickname.equals("")){
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                loadingBar.setVisibility(View.VISIBLE);
+                listener.onImageAndNickname(nickname,() -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
     }
@@ -64,6 +85,7 @@ public class FirstSignInFragment extends Fragment {
     }
 
     public static interface FirstSignInFragmentClickListener {
-        public void onSignIn(Runnable onFinish);
+        public void onSkip(Runnable onFinish);
+        public void onImageAndNickname(String nickname, Runnable onFinish);
     }
 }

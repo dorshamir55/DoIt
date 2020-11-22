@@ -102,4 +102,7 @@
     <string name="closed">closed</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="save">Save</string>
+    <string name="nickname">Nickname</string>
+    <string name="skip">Skip</string>
+    <string name="nickname_validation">Nickname can\'t be blank!</string>
 </resources>
