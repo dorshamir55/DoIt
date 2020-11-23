@@ -1,40 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SignInActivity"
-    android:gravity="center"
-    android:layout_gravity="center">
-    <ScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.ChooseAnswersFragment">
+    <FrameLayout
+        android:id="@+id/nickname_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_style"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        tools:ignore="MissingConstraints">
+        <EditText
+            android:id="@+id/nickname_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="50dp"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/nickname_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/nickname"
-                />
-            <ProgressBar
-                android:id="@+id/firstSignInLoadingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="invisible"
-                android:layout_gravity="center"
-                android:layout_margin="10dp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+            android:hint="@string/nickname"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/choosePicturesRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nickname_frame_layout"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <ProgressBar
+            android:id="@+id/firstSignInLoadingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            tools:ignore="MissingConstraints" />
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:layout_gravity="center">
             <Button
                 android:id="@+id/save_button"
                 android:layout_width="wrap_content"
@@ -48,8 +73,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_style"
                 android:text="@string/skip"/>
-            </LinearLayout>
-
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
