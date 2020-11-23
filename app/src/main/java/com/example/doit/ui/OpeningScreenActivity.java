@@ -35,9 +35,9 @@ public class OpeningScreenActivity extends AppCompatActivity {
 
         handler.postDelayed(() -> {
 
-            if(account != null)
-                startActivity(new Intent(OpeningScreenActivity.this, MainActivity.class));
-            else
+//            if(account != null)
+//                startActivity(new Intent(OpeningScreenActivity.this, MainActivity.class));
+//            else
                 startActivity(new Intent(OpeningScreenActivity.this, SignInActivity.class));
             finish();
         }, 1200);

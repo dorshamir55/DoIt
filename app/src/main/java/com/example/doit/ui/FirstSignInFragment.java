@@ -46,7 +46,7 @@ public class FirstSignInFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         items = new ArrayList<>();
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child("profile_pictures/");
+        StorageReference reference = FirebaseStorage.getInstance().getReference("profile_pictures/");
 
         reference.listAll()
                 .addOnSuccessListener(getActivity(), listResult -> {

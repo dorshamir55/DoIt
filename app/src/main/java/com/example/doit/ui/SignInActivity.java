@@ -65,9 +65,14 @@ public class SignInActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.container2, new GoogleFacebookLoginFragment(), GoogleFacebookLoginFragment.TAG)
+//                .commit();
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container2, new GoogleFacebookLoginFragment(), GoogleFacebookLoginFragment.TAG)
+                .add(R.id.container2, new FirstSignInFragment(), FirstSignInFragment.TAG)
                 .commit();
     }
 
