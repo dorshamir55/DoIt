@@ -1,5 +1,7 @@
 package com.example.doit.viewmodel;
 
+import android.net.Uri;
+
 import androidx.lifecycle.LiveData;
 
 import com.example.doit.model.AnswerFireStore;
@@ -22,5 +24,6 @@ public interface IMainViewModel {
     public void stopPosting(String id);
     public void incrementAnswerWins(String questionID, List<String> winners);
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer);
+    public void getAllAccountImages(Consumer<List<Uri>> uriConsumer);
 }
 

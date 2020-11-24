@@ -19,7 +19,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.List;
 
 public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePictureAccountAdapter.PictureViewHolder> {
-    private List<Task<Uri>> items;
+    private List<Uri> uriList;
     private Context context;
     private MyPictureListener listener;
 
@@ -31,18 +31,16 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
         this.listener=listener;
     }
 
-    public ChoosePictureAccountAdapter(List<Task<Uri>> items, Context context) {
-
-        this.items = items;
+    public ChoosePictureAccountAdapter(Context context) {
         this.context = context;
     }
 
-    public void setData(List<Task<Uri>> items) {
-        this.items = items;
+    public void setData(List<Uri> uriList) {
+        this.uriList = uriList;
     }
 
-    public List<Task<Uri>> getData() {
-        return items;
+    public List<Uri> getData() {
+        return uriList;
     }
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
@@ -73,18 +71,20 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
 
     @Override
     public void onBindViewHolder(PictureViewHolder holder, int position) {
+        assert uriList != null;
 
-        Task<Uri> item = items.get(position);
         Glide
                 .with(context)
-                .load(item.getResult())
+                .load(uriList.get(position))
                 .apply(new RequestOptions())
                 .into(holder.imageIv);
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        if(uriList == null)
+            return 0;
+        return uriList.size();
     }
 
     @Override

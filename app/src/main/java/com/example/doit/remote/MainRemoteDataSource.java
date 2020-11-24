@@ -1,5 +1,6 @@
 package com.example.doit.remote;
 
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -234,6 +237,32 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                     if(userConsumer != null)
                         userConsumer.apply(userData);
         });
+    }
+
+    @Override
+    public void fetchAllAccountImages(Consumer<List<Uri>> uriConsumer) {
+        StorageReference reference = FirebaseStorage.getInstance().getReference("profile_pictures/");
+        List<Uri> uriList = new ArrayList<>();
+
+        reference.listAll()
+                .addOnSuccessListener( listResult -> {
+                    for (StorageReference item : listResult.getItems()) {
+                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                uriList.add(uri);
+                            }
+                        });
+                    }
+//                    if(uriConsumer!=null)
+                        uriConsumer.apply(uriList);
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private void fetchAllAnswersInQuestion(String questionID, Consumer<List<AnswerInQuestion>> consumerList) {

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.ChooseAnswersFragment">
+    tools:context=".ui.ChooseAnswersFragment"
+    android:layout_marginTop="10dp">
     <FrameLayout
         android:id="@+id/question_frame_layout"
         android:layout_width="match_parent"

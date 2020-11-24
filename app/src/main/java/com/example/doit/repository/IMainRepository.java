@@ -1,5 +1,7 @@
 package com.example.doit.repository;
 
+import android.net.Uri;
+
 import androidx.lifecycle.LiveData;
 
 import com.example.doit.model.AnswerFireStore;
@@ -22,4 +24,5 @@ public interface IMainRepository {
     public void stopPosting(String id, Runnable onFinish);
     public void incrementAnswerWins(String questionID, List<String> winners);
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer);
+    public void getAllAccountImages(Consumer<List<Uri>> uriConsumer);
 }

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.ChooseAnswersFragment">
+    tools:context=".ui.ChooseAnswersFragment"
+    android:layout_marginTop="10dp">
     <FrameLayout
         android:id="@+id/nickname_frame_layout"
         android:layout_width="match_parent"
@@ -19,8 +20,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/nickname"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"/>
     </FrameLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/choosePicturesRecycler"

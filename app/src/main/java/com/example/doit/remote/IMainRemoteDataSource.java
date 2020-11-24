@@ -1,5 +1,7 @@
 package com.example.doit.remote;
 
+import android.net.Uri;
+
 import com.example.doit.model.AnswerFireStore;
 import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
@@ -21,4 +23,5 @@ public interface IMainRemoteDataSource {
     public void changeUpdatedToFalse(String id);
     public void incrementAnswerWins(String questionID, List<String> winners);
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer);
+    public void fetchAllAccountImages(Consumer<List<Uri>> uriConsumer);
 }

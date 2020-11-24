@@ -2,6 +2,7 @@ package com.example.doit.viewmodel;
 
 import android.app.Application;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -82,5 +83,10 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     @Override
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer) {
         mainRepository.getCurrentUserData(uid, userConsumer);
+    }
+
+    @Override
+    public void getAllAccountImages(Consumer<List<Uri>> uriConsumer) {
+        mainRepository.getAllAccountImages(uriConsumer);
     }
 }

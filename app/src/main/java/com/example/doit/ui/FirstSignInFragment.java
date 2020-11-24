@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,22 +23,30 @@ import android.widget.Toast;
 import com.example.doit.R;
 import com.example.doit.adapter.AnswersRecyclerAdapter;
 import com.example.doit.adapter.ChoosePictureAccountAdapter;
+import com.example.doit.model.Consumer;
 import com.example.doit.model.UserData;
+import com.example.doit.viewmodel.IMainViewModel;
+import com.example.doit.viewmodel.MainViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FirstSignInFragment extends Fragment {
+    private IMainViewModel viewModel = null;
     public static final String TAG = "FIRST_SIGN_IN_FRG";
     private FirstSignInFragmentClickListener listener;
     private ChoosePictureAccountAdapter adapter;
 
-    private List<Task<Uri>> items;// = new ArrayList<>();
+    private List<Uri> uriList;// = new ArrayList<>();
+    private List<Task<Uri>> items;
     private Button saveButton, skipButton;
     private EditText nicknameEditText;
 
@@ -45,14 +54,23 @@ public class FirstSignInFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
+        adapter = new ChoosePictureAccountAdapter(getActivity());
+        uriList = new ArrayList<>();
         items = new ArrayList<>();
         StorageReference reference = FirebaseStorage.getInstance().getReference("profile_pictures/");
-
         reference.listAll()
-                .addOnSuccessListener(getActivity(), listResult -> {
+                .addOnSuccessListener( listResult -> {
                     for (StorageReference item : listResult.getItems()) {
-                        items.add(item.getDownloadUrl());
+                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                uriList.add(uri);
+                            }
+                        });
                     }
+                    adapter.setData(uriList);
+                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -61,7 +79,6 @@ public class FirstSignInFragment extends Fragment {
                     }
                 });
 
-        adapter = new ChoosePictureAccountAdapter(items, getContext());
     }
 
     @Override
@@ -102,6 +119,15 @@ public class FirstSignInFragment extends Fragment {
                 listener.onImageAndNickname(nickname,() -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
+
+//        Consumer<List<Uri>> uriConsumer = new Consumer<List<Uri>>() {
+//            @Override
+//            public void apply(List<Uri> uriList) {
+//                adapter.setData(uriList);
+//                adapter.notifyDataSetChanged();
+//            }
+//        };
+//        viewModel.getAllAccountImages(uriConsumer);
 
         RecyclerView recyclerView = view.findViewById(R.id.choosePicturesRecycler);
         recyclerView.setHasFixedSize(true);

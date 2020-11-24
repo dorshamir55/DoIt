@@ -1,6 +1,7 @@
 package com.example.doit.repository;
 
 import android.app.Application;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -110,6 +111,11 @@ public class MainRepository implements IMainRepository{
     @Override
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer) {
         remoteDataSource.getCurrentUserData(uid, userConsumer);
+    }
+
+    @Override
+    public void getAllAccountImages(Consumer<List<Uri>> uriConsumer) {
+        remoteDataSource.fetchAllAccountImages(uriConsumer);
     }
 
     private void doAsynch(Runnable task) {
