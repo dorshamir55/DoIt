@@ -10,4 +10,5 @@
     <color name="lightGrey">#808080</color>
     <color name="Grey">#5E5E5E</color>
     <color name="hulo_light_blue">#ff33b5e5</color>
+    <color name="transparent">#00000000</color>
 </resources>

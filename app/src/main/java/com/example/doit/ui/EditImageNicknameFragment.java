@@ -1,8 +1,6 @@
 package com.example.doit.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,9 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,45 +20,47 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.doit.R;
-import com.example.doit.adapter.AnswersRecyclerAdapter;
 import com.example.doit.adapter.ChoosePictureAccountAdapter;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.UserData;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstSignInFragment extends Fragment {
+public class EditImageNicknameFragment extends Fragment {
     private IMainViewModel viewModel = null;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
     public static final String TAG = "FIRST_SIGN_IN_FRG";
+    public static final String PROFILE_IMAGES_FOLDER = "profile_pictures/";
     private FirstSignInFragmentClickListener listener;
     private ChoosePictureAccountAdapter adapter;
+    private ChoosePictureAccountAdapter.MyPictureListener pictureListener;
+    private UserData userData;
 
-    private List<Uri> uriList;// = new ArrayList<>();
     private List<StorageReference> items;
     private Button saveButton, skipButton;
     private EditText nicknameEditText;
-    private ChoosePictureAccountAdapter.MyPictureListener pictureListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        adapter = new ChoosePictureAccountAdapter(getActivity(), 0);
-        uriList = new ArrayList<>();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        adapter = new ChoosePictureAccountAdapter(getActivity(), UserData.DEFAULT_IMAGE);
         items = new ArrayList<>();
-        StorageReference reference = FirebaseStorage.getInstance().getReference("profile_pictures/");
+        userData = new UserData();
+
+        StorageReference reference = FirebaseStorage.getInstance().getReference(PROFILE_IMAGES_FOLDER);
         reference.listAll()
                 .addOnSuccessListener( listResult -> {
                     for (StorageReference item : listResult.getItems()) {
@@ -88,7 +88,7 @@ public class FirstSignInFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first_sign_in, container, false);
+        return inflater.inflate(R.layout.fragment_edit_image_nickname, container, false);
     }
 
     @Override
@@ -97,6 +97,14 @@ public class FirstSignInFragment extends Fragment {
 
         ProgressBar loadingBar = view.findViewById(R.id.firstSignInLoadingBar);
         nicknameEditText = view.findViewById(R.id.nickname_edit_text);
+        Consumer<UserData> userConsumer = new Consumer<UserData>() {
+            @Override
+            public void apply(UserData currentUser) {
+                userData = currentUser;
+                nicknameEditText.setText(currentUser.getNickName());
+            }
+        };
+        viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
 
         skipButton = view.findViewById(R.id.skip_button);
         skipButton.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +127,8 @@ public class FirstSignInFragment extends Fragment {
                     return;
                 }
                 loadingBar.setVisibility(View.VISIBLE);
-                listener.onImageAndNickname(nickname,() -> loadingBar.setVisibility(View.INVISIBLE));
+                listener.onImageAndNickname(nickname, ChoosePictureAccountAdapter.currentImageSelectedName,
+                        () -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
 
@@ -136,6 +145,13 @@ public class FirstSignInFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        }, 1000);
     }
 
     @Override
@@ -143,7 +159,7 @@ public class FirstSignInFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            listener = (FirstSignInFragment.FirstSignInFragmentClickListener)context;
+            listener = (EditImageNicknameFragment.FirstSignInFragmentClickListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
@@ -152,6 +168,6 @@ public class FirstSignInFragment extends Fragment {
 
     public static interface FirstSignInFragmentClickListener {
         public void onSkip(Runnable onFinish);
-        public void onImageAndNickname(String nickname, Runnable onFinish);
+        public void onImageAndNickname(String nickname, String profileImage, Runnable onFinish);
     }
 }

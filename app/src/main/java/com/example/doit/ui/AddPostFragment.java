@@ -179,17 +179,4 @@ public class AddPostFragment extends Fragment {
             }
         });
     }
-
-    private void replaceFragment (Fragment fragment, FragmentManager manager){
-        String backStateName = fragment.getClass().getName();
-
-        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
-
-        if (!fragmentPopped){ //fragment not in back stack, create it.
-            FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.nav_host_fragment, fragment);
-            ft.addToBackStack(backStateName);
-            ft.commit();
-        }
-    }
 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.SquareLayout;
+import com.example.doit.ui.EditImageNicknameFragment;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -39,7 +42,8 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
     private boolean[] isDownloaded;
     private Context context;
     private MyPictureListener listener;
-    private int imageSelectedPosition;
+    private int lastSelectedPosition;
+    public  static String currentImageSelectedName;
 
     public interface MyPictureListener {
         void onPictureClicked(int position, View view);
@@ -49,9 +53,9 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
         this.listener=listener;
     }
 
-    public ChoosePictureAccountAdapter(Context context, int imageSelectedPosition) {
+    public ChoosePictureAccountAdapter(Context context, String currentImageSelectedName) {
         this.context = context;
-        this.imageSelectedPosition = imageSelectedPosition;
+        this.currentImageSelectedName = currentImageSelectedName;
     }
 
     public void setData(List<StorageReference> items) {
@@ -67,25 +71,24 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
     public class PictureViewHolder extends RecyclerView.ViewHolder {
         ImageView imageIv;
         ProgressBar loadingBar;
-        SquareLayout linearLayout;
+        SquareLayout squareLayout;
 
         public PictureViewHolder(View itemView) {
             super(itemView);
 
             imageIv = itemView.findViewById(R.id.choose_picture_account_image);
             loadingBar = itemView.findViewById(R.id.image_loadingBar);
-            linearLayout = itemView.findViewById(R.id.picture_square_layout);
+            squareLayout = itemView.findViewById(R.id.picture_square_layout);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
                     if(listener!=null)
                         listener.onPictureClicked(getAdapterPosition(), v);
-                    if(((ColorDrawable)linearLayout.getBackground()).getColor() == Color.parseColor("#00000000")){
-                        linearLayout.setBackgroundColor(context.getColor(R.color.hulo_light_blue));
-                        imageSelectedPosition = getAdapterPosition();
-                    }
-                    else{
-                        linearLayout.setBackgroundColor(Color.parseColor("#00000000"));
+                    if(((ColorDrawable)squareLayout.getBackground()).getColor() == context.getColor(R.color.transparent)){
+//                        squareLayout.setBackgroundColor(context.getColor(R.color.hulo_light_blue));
+                        currentImageSelectedName = items.get(getAdapterPosition()).getName();
+                        notifyItemChanged(getAdapterPosition());
+                        notifyItemChanged(lastSelectedPosition);
                     }
                 }
             });
@@ -105,6 +108,23 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
 
 //        Uri uri = items.get(position).getDownloadUrl().getResult();
 
+//        if(position == imageSelectedPosition){
+//
+//            holder.squareLayout.setBackgroundColor(context.getColor(R.color.hulo_light_blue));
+//            imageSelectedID = items.get(position).getName();
+//        }
+//        else{
+//            holder.squareLayout.setBackgroundColor(context.getColor(R.color.transparent));
+//        }
+        if(items.get(position).getName().equals(currentImageSelectedName)){
+            holder.squareLayout.setBackgroundColor(context.getColor(R.color.hulo_light_blue));
+//            currentImageSelectedName = items.get(position).getName();
+            lastSelectedPosition = position;
+        }
+        else{
+            holder.squareLayout.setBackgroundColor(context.getColor(R.color.transparent));
+        }
+//        Toast.makeText(context, items.get(position).getName(), Toast.LENGTH_SHORT).show();
         if(isDownloaded[position]) {
             holder.loadingBar.setVisibility(View.GONE);
             Glide
@@ -127,7 +147,6 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
                                         .load(uri)
                                         .apply(new RequestOptions())
                                         .into(holder.imageIv);
-
                                 uriArray[position] = uri;
                                 isDownloaded[position] = true;
                             }

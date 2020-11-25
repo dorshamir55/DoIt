@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Script;
 import android.text.method.LinkMovementMethod;
@@ -30,6 +31,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
 import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.Consumer;
@@ -38,6 +41,7 @@ import com.example.doit.model.PieChartHelper;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
+import com.example.doit.ui.EditImageNicknameFragment;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.github.mikephil.charting.charts.PieChart;
@@ -48,6 +52,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -55,6 +60,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,6 +171,30 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             @Override
             public void apply(UserData postedUser) {
                 holder.nickname.setText(postedUser.getNickName());
+//                if(imageDownloaded){
+//                    Glide
+//                            .with(activity)
+//                            .load(holder.imageUri)
+//                            .apply(new RequestOptions())
+//                            .into(holder.imageNickName);
+//                }
+//                else {
+                    FirebaseStorage.getInstance().getReference(EditImageNicknameFragment.PROFILE_IMAGES_FOLDER)
+                            .child(postedUser.getProfileImageName()).getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+//                                    holder.imageUri = uri;
+                                    Glide
+                                            .with(activity)
+                                            .load(uri)
+                                            .apply(new RequestOptions())
+                                            .into(holder.imageNickName);
+
+//                                    imageDownloaded = true;
+                                }
+                            });
+//                }
             }
         };
         viewModel.getCurrentUserData(listData.get(position).getPostedUserId(), userConsumer);
@@ -301,6 +331,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         private PieChart pieChart;
         private WebView webView;
         private ImageView imageNickName, imageOptions;
+        private Uri imageUri;
         private TextView nickname, question, noVotes;
         private RadioGroup answersGroup;
         private RadioButton answer1, answer2, answer3, answer4;

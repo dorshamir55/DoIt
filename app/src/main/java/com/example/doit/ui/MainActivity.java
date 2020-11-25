@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager manager;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAuth auth;
-    private UserData userData;
+    public UserData userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 //        postQuestion(new QuestionPostData("22", question,  answers, Calendar.getInstance().getTime()));
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         manager = getSupportFragmentManager();
-        manager.beginTransaction().add(R.id.nav_host_fragment, new HomeFragment()).commit();
+//        manager.beginTransaction().add(R.id.nav_host_fragment, new HomeFragment()).commit();
 
 //        replaceFragment (new HomeFragment());
 
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.action_add:
 //                        switchToAddPostFragment();
-                        replaceFragment(new AddPostFragment());
+                            replaceFragment(new AddPostFragment());
                         break;
 
                     case R.id.action_statistics:
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         // which items considered as "top items" - will have a drawer icon instead of
         // back icon.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_my_profile)//, R.id.nav_my_ads, R.id.nav_notif_settings)
+                R.id.nav_home, R.id.nav_my_profile, R.id.nav_add_post)
                 .setDrawerLayout(drawer)
                 .build();
 
