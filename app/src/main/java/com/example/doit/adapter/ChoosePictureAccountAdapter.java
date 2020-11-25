@@ -2,26 +2,44 @@ package com.example.doit.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.SquareLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePictureAccountAdapter.PictureViewHolder> {
-    private List<Uri> uriList;
+    private List<StorageReference> items;
+    private Uri[] uriArray;
+    private boolean[] isDownloaded;
     private Context context;
     private MyPictureListener listener;
+    private int imageSelectedPosition;
 
     public interface MyPictureListener {
         void onPictureClicked(int position, View view);
@@ -31,32 +49,45 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
         this.listener=listener;
     }
 
-    public ChoosePictureAccountAdapter(Context context) {
+    public ChoosePictureAccountAdapter(Context context, int imageSelectedPosition) {
         this.context = context;
+        this.imageSelectedPosition = imageSelectedPosition;
     }
 
-    public void setData(List<Uri> uriList) {
-        this.uriList = uriList;
+    public void setData(List<StorageReference> items) {
+        this.items = items;
+        this.uriArray = new Uri[items.size()];
+        this.isDownloaded = new boolean[items.size()];
     }
 
-    public List<Uri> getData() {
-        return uriList;
+    public List<StorageReference> getData() {
+        return items;
     }
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {
         ImageView imageIv;
+        ProgressBar loadingBar;
+        SquareLayout linearLayout;
 
         public PictureViewHolder(View itemView) {
             super(itemView);
 
             imageIv = itemView.findViewById(R.id.choose_picture_account_image);
+            loadingBar = itemView.findViewById(R.id.image_loadingBar);
+            linearLayout = itemView.findViewById(R.id.picture_square_layout);
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+            itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public boolean onLongClick(View v){
+                public void onClick(View v){
                     if(listener!=null)
                         listener.onPictureClicked(getAdapterPosition(), v);
-                    return false;
+                    if(((ColorDrawable)linearLayout.getBackground()).getColor() == Color.parseColor("#00000000")){
+                        linearLayout.setBackgroundColor(context.getColor(R.color.hulo_light_blue));
+                        imageSelectedPosition = getAdapterPosition();
+                    }
+                    else{
+                        linearLayout.setBackgroundColor(Color.parseColor("#00000000"));
+                    }
                 }
             });
         }
@@ -71,20 +102,52 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
 
     @Override
     public void onBindViewHolder(PictureViewHolder holder, int position) {
-        assert uriList != null;
+        assert items != null;
 
-        Glide
-                .with(context)
-                .load(uriList.get(position))
-                .apply(new RequestOptions())
-                .into(holder.imageIv);
+//        Uri uri = items.get(position).getDownloadUrl().getResult();
+
+        if(isDownloaded[position]) {
+            holder.loadingBar.setVisibility(View.GONE);
+            Glide
+                    .with(context)
+                    .load(uriArray[position])
+                    .apply(new RequestOptions())
+                    .into(holder.imageIv);
+        }
+        else {
+            holder.loadingBar.setVisibility(View.VISIBLE);
+            items.get(position).getDownloadUrl()
+                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            holder.loadingBar.setVisibility(View.GONE);
+                            Uri uri = task.getResult();
+                            if(uri!=null) {
+                                Glide
+                                        .with(context)
+                                        .load(uri)
+                                        .apply(new RequestOptions())
+                                        .into(holder.imageIv);
+
+                                uriArray[position] = uri;
+                                isDownloaded[position] = true;
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            isDownloaded[position] = false;
+                        }
+                    });
+        }
     }
 
     @Override
     public int getItemCount() {
-        if(uriList == null)
+        if(items == null)
             return 0;
-        return uriList.size();
+        return items.size();
     }
 
     @Override

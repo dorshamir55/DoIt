@@ -1,6 +1,7 @@
 package com.example.doit.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -46,31 +47,33 @@ public class FirstSignInFragment extends Fragment {
     private ChoosePictureAccountAdapter adapter;
 
     private List<Uri> uriList;// = new ArrayList<>();
-    private List<Task<Uri>> items;
+    private List<StorageReference> items;
     private Button saveButton, skipButton;
     private EditText nicknameEditText;
+    private ChoosePictureAccountAdapter.MyPictureListener pictureListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
-        adapter = new ChoosePictureAccountAdapter(getActivity());
+        adapter = new ChoosePictureAccountAdapter(getActivity(), 0);
         uriList = new ArrayList<>();
         items = new ArrayList<>();
         StorageReference reference = FirebaseStorage.getInstance().getReference("profile_pictures/");
         reference.listAll()
                 .addOnSuccessListener( listResult -> {
                     for (StorageReference item : listResult.getItems()) {
-                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                uriList.add(uri);
-                            }
-                        });
+//                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                            @Override
+//                            public void onSuccess(Uri uri) {
+//                                uriList.add(uri);
+//                            }
+//                        });
+                        items.add(item);
                     }
-                    adapter.setData(uriList);
-                    adapter.notifyDataSetChanged();
+                    adapter.setData(items);
+//                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
