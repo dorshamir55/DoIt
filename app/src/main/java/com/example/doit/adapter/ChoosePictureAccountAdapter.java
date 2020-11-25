@@ -75,7 +75,6 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
             imageIv = itemView.findViewById(R.id.choose_picture_account_image);
             loadingBar = itemView.findViewById(R.id.image_loadingBar);
             linearLayout = itemView.findViewById(R.id.picture_square_layout);
-
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
