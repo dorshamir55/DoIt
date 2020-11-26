@@ -68,7 +68,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/topBorderBottomNavigation"
-        app:layout_constraintTop_toBottomOf="@id/appBar"
-        app:navGraph="@navigation/app_navigation" />
+        app:layout_constraintTop_toBottomOf="@id/appBar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

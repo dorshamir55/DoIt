@@ -1,9 +1,11 @@
 package com.example.doit.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -59,19 +61,28 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAuth auth;
     public UserData userData;
+    private DrawerLayout drawer;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //return super.onOptionsItemSelected(item);
+
+        int itemId = item.getItemId();
+        switch(itemId) {
+            // Android home
+            case android.R.id.home:
+                drawer.openDrawer(GravityCompat.START);
+                return true;
+            // manage other entries if you have it ...
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        LocalHelper localHelper = new LocalHelper(this);
-//        localHelper.loadLocale();
-
-//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        DatabaseReference ref = database.getReference("server/saving-data/fireblog");
-//        DatabaseReference usersRef = ref.child("users");
-//
 //        Map<String, UserData> users = new HashMap<>();
 //        users.put("Lala", new UserData("Ronaldo", "dor123@321.com"));
 //
@@ -84,17 +95,22 @@ public class MainActivity extends AppCompatActivity {
 //        answers.add(new Answer("3", "Green"));
 //        answers.add(new Answer("4", "Yellow"));
 //        postQuestion(new QuestionPostData("22", question,  answers, Calendar.getInstance().getTime()));
+
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        auth = FirebaseAuth.getInstance();
         manager = getSupportFragmentManager();
 //        manager.beginTransaction().add(R.id.nav_host_fragment, new HomeFragment()).commit();
 
-//        replaceFragment (new HomeFragment());
+        replaceFragment (new HomeFragment());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         navigationView.getMenu().findItem(R.id.nav_settings).setOnMenuItemClickListener(menuItem -> {
@@ -116,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_home:
 //                        switchToHomeFragment();
-                            replaceFragment(new HomeFragment());
+                        replaceFragment(new HomeFragment());
                         break;
 
                     case R.id.action_search:
@@ -126,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.action_add:
 //                        switchToAddPostFragment();
-                            replaceFragment(new AddPostFragment());
+                        replaceFragment(new AddPostFragment());
                         break;
 
                     case R.id.action_statistics:
@@ -135,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.action_profile:
 //                        switchToProfileFragment();
-                            replaceFragment(new MyProfileFragment());
+                        replaceFragment(new MyProfileFragment());
                         break;
                 }
                 return true;
@@ -145,19 +161,6 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        // which items considered as "top items" - will have a drawer icon instead of
-        // back icon.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_my_profile, R.id.nav_add_post)
-                .setDrawerLayout(drawer)
-                .build();
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-
-        auth = FirebaseAuth.getInstance();
 
         authStateListener = firebaseAuth -> { // onAuthChanged..
             // if signed-out
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
-//        welcomeTV.setText(welcome+currentUser.getDisplayName());
+
         if(userData != null) {
             welcomeTV.setText(welcome + userData.getNickName());
             welcomeTV.setMovementMethod(LinkMovementMethod.getInstance());
@@ -216,26 +219,6 @@ public class MainActivity extends AppCompatActivity {
             ft.commit();
         }
     }
-
-//    public void switchToHomeFragment() {
-//        manager.beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
-//    }
-//
-//    public void switchToProfileFragment() {
-//        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment()).commit();
-//    }
-//
-//    public void switchToAddPostFragment() {
-//        manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment(), "AddPostFragment").commit();
-//    }
-//
-//    public void switchToStatisticsFragment() {
-//        //manager.beginTransaction().replace(R.id.nav_host_fragment, new AddPostFragment()).commit();
-//    }
-//
-//    private void switchToSettings() {
-//        manager.beginTransaction().replace(R.id.nav_host_fragment, new SettingsFragment()).commit();
-//    }
 
     private void logout() {
         new AlertDialog.Builder(this)
