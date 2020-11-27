@@ -45,6 +45,7 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
     private int lastSelectedPosition;
     public  static String currentImageSelectedName;
 
+
     public interface MyPictureListener {
         void onPictureClicked(int position, View view);
     }
@@ -56,6 +57,10 @@ public class ChoosePictureAccountAdapter extends RecyclerView.Adapter<ChoosePict
     public ChoosePictureAccountAdapter(Context context, String currentImageSelectedName) {
         this.context = context;
         this.currentImageSelectedName = currentImageSelectedName;
+    }
+
+    public void setSavedImage(String profileImageName) {
+        this.currentImageSelectedName = profileImageName;
     }
 
     public void setData(List<StorageReference> items) {

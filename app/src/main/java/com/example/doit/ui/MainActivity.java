@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doit.R;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.ContextWrapper;
 import com.example.doit.model.Keyboard;
@@ -54,11 +55,13 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.auth.User;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
-public class MainActivity extends AppCompatActivity implements EditImageNicknameFragment.EditImageNicknameFragmentClickListener {
+public class MainActivity extends AppCompatActivity implements EditImageNicknameFragment.EditImageNicknameFragmentClickListener,
+        HomeFragment.VotesFragmentClickListener{
     public static boolean isSignInNow = true;
     private IMainViewModel viewModel = null;
     private AppBarConfiguration mAppBarConfiguration;
@@ -310,5 +313,10 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
                         Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public void onVote(String questionPosdId, String currentUserId, List<AnswerInPost> answersList, int answerVoted) {
+        viewModel.voteOnPost(questionPosdId, currentUserId, answersList, userData.getPostedQuestionsIdList(), answerVoted);
     }
 }

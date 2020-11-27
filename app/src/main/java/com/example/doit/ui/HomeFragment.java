@@ -31,7 +31,9 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.adapter.PostsRecyclerAdapter;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.UserData;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -48,6 +50,8 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private PostsRecyclerAdapter adapter;// = new PostsRecyclerAdapter(getActivity());
     private BroadcastReceiver reloadAdsReceiver;
+    private VotesFragmentClickListener votesFragmentClickListener;
+    private UserData userData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,7 +154,8 @@ public class HomeFragment extends Fragment {
 
     private void vote(QuestionPostData clickedPost, int answerVoted){
         //clickedPost.getAnswers().get(answerPosition).setVotes(clickedPost.getAnswers().get(answerPosition).getVotes() + 1);
-        viewModel.voteOnPost(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
+//        viewModel.voteOnPost(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
+        votesFragmentClickListener.onVote(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
     }
 
     private void deletePost(int position, QuestionPostData clickedPost){
@@ -182,6 +187,22 @@ public class HomeFragment extends Fragment {
         super.onPause();
         if(getContext() != null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(reloadAdsReceiver);
+        }
+    }
+
+    public static interface VotesFragmentClickListener {
+        public void onVote(String questionPosdId, String currentUserId, List<AnswerInPost> answersList, int answerVoted);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            votesFragmentClickListener = (HomeFragment.VotesFragmentClickListener)context;
+        } catch(ClassCastException ex) {
+            throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
+                    " interface!");
         }
     }
 }

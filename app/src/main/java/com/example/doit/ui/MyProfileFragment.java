@@ -40,7 +40,7 @@ public class MyProfileFragment extends Fragment {
     private Uri imageUri;
     private boolean isDownloaded = false;
     private CircleImageView profileImage;
-    private TextView nickname;
+    private TextView nickname, totalVotes;
     private ImageView editIV;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,12 +62,18 @@ public class MyProfileFragment extends Fragment {
 
         profileImage = view.findViewById(R.id.profile_image_cell_my_profile);
         nickname = view.findViewById(R.id.nickname_cell_my_profile);
+        totalVotes = view.findViewById(R.id.total_votes_text_view);
         editIV = view.findViewById(R.id.edit_image_nickname_button);
 
         editIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditImageNicknameFragment editImageNicknameFragment = new EditImageNicknameFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user_data", userData);
+                editImageNicknameFragment.setArguments(bundle);
+
                 FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.nav_host_fragment, editImageNicknameFragment)
                         .addToBackStack(editImageNicknameFragment.getClass().getName());
@@ -81,13 +87,17 @@ public class MyProfileFragment extends Fragment {
             public void apply(UserData currentUser) {
                 userData = currentUser;
                 nickname.setText(userData.getNickName());
+                String totalVotesString = getResources().getString(R.string.total_votes);
+                totalVotes.setText(totalVotesString + userData.getAmountOfVotes());
 
                 if(isDownloaded){
-                    Glide
-                            .with(getActivity())
-                            .load(imageUri)
-                            .apply(new RequestOptions())
-                            .into(profileImage);
+                    if(isAdded()) {
+                        Glide
+                                .with(getActivity())
+                                .load(imageUri)
+                                .apply(new RequestOptions())
+                                .into(profileImage);
+                    }
                 }
                 else {
                     FirebaseStorage.getInstance().getReference(EditImageNicknameFragment.PROFILE_IMAGES_FOLDER)

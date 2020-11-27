@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.doit.R;
 import com.example.doit.adapter.ChoosePictureAccountAdapter;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.UserData;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
@@ -56,9 +57,17 @@ public class EditImageNicknameFragment extends Fragment {
         viewModel = new ViewModelProvider(getActivity()).get(MainViewModel.class);
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        adapter = new ChoosePictureAccountAdapter(getActivity(), UserData.DEFAULT_IMAGE);
         items = new ArrayList<>();
         userData = new UserData();
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            userData = (UserData) bundle.getSerializable("user_data");
+        }
+
+        if(userData != null) {
+            adapter = new ChoosePictureAccountAdapter(getActivity(), userData.getProfileImageName());
+        }
 
         StorageReference reference = FirebaseStorage.getInstance().getReference(PROFILE_IMAGES_FOLDER);
         reference.listAll()
@@ -73,7 +82,6 @@ public class EditImageNicknameFragment extends Fragment {
                         items.add(item);
                     }
                     adapter.setData(items);
-//                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -97,14 +105,19 @@ public class EditImageNicknameFragment extends Fragment {
 
         ProgressBar loadingBar = view.findViewById(R.id.firstSignInLoadingBar);
         nicknameEditText = view.findViewById(R.id.nickname_edit_text);
-        Consumer<UserData> userConsumer = new Consumer<UserData>() {
-            @Override
-            public void apply(UserData currentUser) {
-                userData = currentUser;
-                nicknameEditText.setText(currentUser.getNickName());
-            }
-        };
-        viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
+
+//        Consumer<UserData> userConsumer = new Consumer<UserData>() {
+//            @Override
+//            public void apply(UserData currentUser) {
+//                userData = currentUser;
+//                nicknameEditText.setText(currentUser.getNickName());
+////                adapter.setSavedImage(userData.getProfileImageName());
+////                adapter.notifyDataSetChanged();
+//            }
+//        };
+//        viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
+
+        nicknameEditText.setText(userData.getNickName());
 
         skipButton = view.findViewById(R.id.skip_button);
         skipButton.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +127,11 @@ public class EditImageNicknameFragment extends Fragment {
                 listener.onSkip(() -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
-        if(!MainActivity.isSignInNow){
+
+        if(!MainActivity.isSignInNow)
             skipButton.setVisibility(View.GONE);
-        }
+
+        nicknameEditText.setText(userData.getNickName());
 
         saveButton = view.findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {

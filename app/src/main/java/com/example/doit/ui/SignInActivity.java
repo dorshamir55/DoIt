@@ -41,6 +41,7 @@ public class SignInActivity extends AppCompatActivity
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private GoogleSignInClient mGoogleSignInClient;
+    private UserData userData;
     private final int RC_SIGN_IN = 1;
 
     @Override
@@ -109,7 +110,7 @@ public class SignInActivity extends AppCompatActivity
 
                             String email = mAuth.getCurrentUser().getEmail();
                             String nickname = mAuth.getCurrentUser().getDisplayName();
-                            UserData userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
+                            userData = new UserData(nickname, email).withId(mAuth.getCurrentUser().getUid());
                             addUserToDB(userData);
 //                            moveToFirstSignInFragment();
                         } else {
@@ -174,9 +175,14 @@ public class SignInActivity extends AppCompatActivity
     }
 
     private void moveToFirstSignInFragment() {
+        EditImageNicknameFragment editImageNicknameFragment = new EditImageNicknameFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("user_data", userData);
+        editImageNicknameFragment.setArguments(bundle);
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container2, new EditImageNicknameFragment(), EditImageNicknameFragment.TAG)
+                .replace(R.id.container2, editImageNicknameFragment, EditImageNicknameFragment.TAG)
                 .commit();
     }
 

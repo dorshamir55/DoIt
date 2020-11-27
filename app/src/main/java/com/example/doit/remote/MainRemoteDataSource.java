@@ -125,15 +125,17 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
     }
 
     @Override
-    public void updateVotes(String id, String currentUserId, List<AnswerInPost> answersInPost, int votedPosition, Runnable onFinish) {
+    public void updateVotes(String questionPostId, String currentUserId, List<AnswerInPost> answersInPost, List<String> postedQuestionsIdList, int votedPosition, Runnable onFinish) {
         Map<String, Object> data = new HashMap<>();
         List<String> votedList = answersInPost.get(votedPosition).getVotedUserIdList();
         votedList.add(currentUserId);
+        postedQuestionsIdList.add(questionPostId);
         answersInPost.get(votedPosition).setVotedUserIdList(votedList);
         data.put("updateDate", FieldValue.serverTimestamp());
         data.put("voted", true);
         data.put("answers", answersInPost);
-        db.collection(QuestionPostData.TABLE_NAME).document(id).set(data, SetOptions.merge())
+        data.put("postedQuestionsIdList", postedQuestionsIdList);
+        db.collection(QuestionPostData.TABLE_NAME).document(questionPostId).set(data, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
