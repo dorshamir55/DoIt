@@ -40,6 +40,7 @@ import com.example.doit.model.Keyboard;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
+import com.example.doit.service.UploadPostService;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,7 +62,7 @@ import java.util.Map;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity implements EditImageNicknameFragment.EditImageNicknameFragmentClickListener,
-        HomeFragment.VotesFragmentClickListener{
+        HomeFragment.VotesFragmentClickListener, UploadPostService.UploadPostServiceClickListener {
     public static boolean isSignInNow = true;
     private IMainViewModel viewModel = null;
     private AppBarConfiguration mAppBarConfiguration;
@@ -318,5 +319,17 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
     @Override
     public void onVote(String questionPosdId, String currentUserId, List<AnswerInPost> answersList, int answerVoted) {
         viewModel.voteOnPost(questionPosdId, currentUserId, answersList, userData.getVotedQuestionPostsIdList(), answerVoted);
+    }
+
+    @Override
+    public void onUpdateAmountOfChosenQuestion(String questionID) {
+        viewModel.updateAmountOfChosenQuestionInQuestion(questionID);
+        //TODO
+        //viewModel.updateAmountOfChosenQuestionInUser(questionID, userData);
+    }
+
+    @Override
+    public void onUpdateUserPostsList(String questionPostID) {
+        viewModel.updateUserPostsList(questionPostID, userData.getId(), userData.getPostedQuestionPostsIdList());
     }
 }

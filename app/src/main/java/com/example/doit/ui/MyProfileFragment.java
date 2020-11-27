@@ -84,8 +84,8 @@ public class MyProfileFragment extends Fragment {
             public void apply(UserData currentUser) {
                 userData = currentUser;
                 nickname.setText(userData.getNickName());
-                votes.setText(userData.getAmountOfVotes());
-                posts.setText(userData.getAmountOfPosts());
+                votes.setText(String.valueOf(userData.getAmountOfVotes()));
+                posts.setText(String.valueOf(userData.getAmountOfPosts()));
 
                 if(isDownloaded){
                     if(isAdded()) {

@@ -267,6 +267,44 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                 });
     }
 
+    @Override
+    public void updateAmountOfChosenQuestionInQuestion(String questionID) {
+        FirebaseFirestore.getInstance().collection(QuestionFireStore.TABLE_NAME).document(questionID)
+                .update("amountOfChoices", FieldValue.increment(-1))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void updateUserPostsList(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
+        Map<String, Object> data = new HashMap<>();
+        postedQuestionPostsIdList.add(questionPostID);
+        data.put("postedQuestionPostsIdList", postedQuestionPostsIdList);
+        db.collection(UserData.TABLE_NAME).document(userID).set(data, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
     private void fetchAllAnswersInQuestion(String questionID, Consumer<List<AnswerInQuestion>> consumerList) {
 
         db.collection(QuestionFireStore.TABLE_NAME).document(questionID)

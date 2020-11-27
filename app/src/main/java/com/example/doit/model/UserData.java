@@ -19,7 +19,7 @@ public class UserData implements Serializable {
     private String email;
     private String profileImageName;
     private List<String> votedQuestionPostsIdList;
-    private List<String> postedQuestionIdList;
+    private List<String> postedQuestionPostsIdList;
 
     public UserData() {
     }
@@ -29,7 +29,7 @@ public class UserData implements Serializable {
         this.email = email;
         this.profileImageName = DEFAULT_IMAGE;
         this.votedQuestionPostsIdList = new ArrayList<>();
-        this.postedQuestionIdList = new ArrayList<>();
+        this.postedQuestionPostsIdList = new ArrayList<>();
     }
 
     public UserData withId(String id) {
@@ -74,12 +74,12 @@ public class UserData implements Serializable {
         this.votedQuestionPostsIdList = votedQuestionPostsIdList;
     }
 
-    public List<String> getPostedQuestionIdList() {
-        return postedQuestionIdList;
+    public List<String> getPostedQuestionPostsIdList() {
+        return postedQuestionPostsIdList;
     }
 
-    public void setPostedQuestionIdList(List<String> postedQuestionIdList) {
-        this.postedQuestionIdList = postedQuestionIdList;
+    public void setPostedQuestionPostsIdList(List<String> postedQuestionPostsIdList) {
+        this.postedQuestionPostsIdList = postedQuestionPostsIdList;
     }
 
     public int getAmountOfVotes(){
@@ -89,9 +89,9 @@ public class UserData implements Serializable {
     }
 
     public int getAmountOfPosts(){
-        if(postedQuestionIdList == null)
+        if(postedQuestionPostsIdList == null)
             return 0;
-        return postedQuestionIdList.size();
+        return postedQuestionPostsIdList.size();
     }
 }
 

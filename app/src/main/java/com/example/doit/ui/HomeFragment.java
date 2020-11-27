@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private PostsRecyclerAdapter adapter;// = new PostsRecyclerAdapter(getActivity());
     private BroadcastReceiver reloadAdsReceiver;
-    private VotesFragmentClickListener votesFragmentClickListener;
+    private VotesFragmentClickListener homeFragmentClickListener;
     private UserData userData;
 
     @Override
@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment {
     private void vote(QuestionPostData clickedPost, int answerVoted){
         //clickedPost.getAnswers().get(answerPosition).setVotes(clickedPost.getAnswers().get(answerPosition).getVotes() + 1);
 //        viewModel.voteOnPost(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
-        votesFragmentClickListener.onVote(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
+        homeFragmentClickListener.onVote(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
     }
 
     private void deletePost(int position, QuestionPostData clickedPost){
@@ -165,6 +165,7 @@ public class HomeFragment extends Fragment {
                 .setIcon(R.drawable.doit_icon)
                 .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
                     viewModel.deletePost(clickedPost);
+                    homeFragmentClickListener.onUpdateAmountOfChosenQuestion(clickedPost.getQuestion().getQuestionID());
                     adapter.getData().remove(position);
                     adapter.notifyItemRemoved(position);
                 })
@@ -191,7 +192,8 @@ public class HomeFragment extends Fragment {
     }
 
     public static interface VotesFragmentClickListener {
-        public void onVote(String questionPosdId, String currentUserId, List<AnswerInPost> answersList, int answerVoted);
+        public void onVote(String questionPostId, String currentUserId, List<AnswerInPost> answersList, int answerVoted);
+        public void onUpdateAmountOfChosenQuestion(String questionID);
     }
 
     @Override
@@ -199,7 +201,7 @@ public class HomeFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            votesFragmentClickListener = (HomeFragment.VotesFragmentClickListener)context;
+            homeFragmentClickListener = (HomeFragment.VotesFragmentClickListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");

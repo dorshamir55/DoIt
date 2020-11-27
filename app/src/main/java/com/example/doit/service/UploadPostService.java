@@ -28,6 +28,7 @@ import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionInPost;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
+import com.example.doit.ui.HomeFragment;
 import com.example.doit.ui.MainActivity;
 import com.example.doit.ui.OpeningScreenActivity;
 import com.example.doit.viewmodel.IMainViewModel;
@@ -55,6 +56,8 @@ public class UploadPostService extends Service
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    private QuestionPostData data;
+    private UploadPostServiceClickListener uploadPostServiceClickListener;
 
     @Override
     public void onCreate() {
@@ -62,6 +65,13 @@ public class UploadPostService extends Service
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
+
+//        try {
+//            uploadPostServiceClickListener = (UploadPostService.UploadPostServiceClickListener)getApplicationContext();
+//        } catch(ClassCastException ex) {
+//            throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
+//                    " interface!");
+//        }
     }
 
     @Override
@@ -93,7 +103,7 @@ public class UploadPostService extends Service
 
         Log.d("TAG", endDate.toString());
 
-        final QuestionPostData data = new QuestionPostData(currentUser.getUid(), question, answersList, endDate);
+        data = new QuestionPostData(currentUser.getUid(), question, answersList, endDate);
         postQuestion(data);
         return Service.START_NOT_STICKY;
     }
@@ -107,7 +117,7 @@ public class UploadPostService extends Service
                             .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
 
                     incrementQuestionChoice(questionPostData.getQuestion().getQuestionID());
-
+//                    uploadPostServiceClickListener.onUpdateUserPostsList(questionPostData.getId());
 //                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
 //                    DatabaseReference ref = database.getReference("server/saving-data/fireblog");
 //                    DatabaseReference timeRef = ref.child("time_left_posts");
@@ -183,6 +193,10 @@ public class UploadPostService extends Service
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    public interface UploadPostServiceClickListener {
+        public void onUpdateUserPostsList(String questionPostID);
     }
 
 }

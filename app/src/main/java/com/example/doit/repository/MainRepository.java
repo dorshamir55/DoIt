@@ -118,6 +118,16 @@ public class MainRepository implements IMainRepository{
         remoteDataSource.fetchAllAccountImages(uriConsumer);
     }
 
+    @Override
+    public void updateAmountOfChosenQuestionInQuestion(String questionID) {
+        remoteDataSource.updateAmountOfChosenQuestionInQuestion(questionID);
+    }
+
+    @Override
+    public void updateUserPostsList(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
+        remoteDataSource.updateUserPostsList(questionPostID, userID, postedQuestionPostsIdList);
+    }
+
     private void doAsynch(Runnable task) {
         new Thread(task).start();
     }

@@ -89,4 +89,14 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     public void getAllAccountImages(Consumer<List<Uri>> uriConsumer) {
         mainRepository.getAllAccountImages(uriConsumer);
     }
+
+    @Override
+    public void updateAmountOfChosenQuestionInQuestion(String questionID) {
+        mainRepository.updateAmountOfChosenQuestionInQuestion(questionID);
+    }
+
+    @Override
+    public void updateUserPostsList(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
+        mainRepository.updateUserPostsList(questionPostID, userID, postedQuestionPostsIdList);
+    }
 }
