@@ -299,7 +299,7 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
     }
 
     @Override
-    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
+    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList, Runnable onFinish) {
         Map<String, Object> data = new HashMap<>();
         postedQuestionPostsIdList.remove(questionPostID);
         data.put("postedQuestionPostsIdList", postedQuestionPostsIdList);
@@ -307,7 +307,8 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        if(onFinish != null)
+                            onFinish.run();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -25,5 +25,5 @@ public interface IMainRemoteDataSource {
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer);
     public void fetchAllAccountImages(Consumer<List<Uri>> uriConsumer);
     public void decrementAmountOfChosenQuestionInQuestionPost(String questionID);
-    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList);
+    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList, Runnable onFinish);
 }

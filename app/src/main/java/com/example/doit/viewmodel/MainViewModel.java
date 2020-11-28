@@ -98,7 +98,10 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
 
     @Override
     public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
-        mainRepository.deleteQuestionPostIdFromUser(questionPostID, userID, postedQuestionPostsIdList);
+        mainRepository.deleteQuestionPostIdFromUser(questionPostID, userID, postedQuestionPostsIdList, ()->{
+            LocalBroadcastManager.getInstance(getApplication().getApplicationContext())
+                    .sendBroadcast(new Intent("com.project.ACTION_RELOAD_USER"));
+        });
     }
 
     @Override

@@ -5,10 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +32,7 @@ import com.example.doit.model.Consumer;
 import com.example.doit.model.DeleteQuestionPostListener;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
+import com.example.doit.model.UserDataListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,10 +46,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyProfileFragment extends Fragment {
     private IMainViewModel viewModel = null;
+    private BroadcastReceiver reloadUserReceiver;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private PostsRecyclerAdapter adapter;
     private DeleteQuestionPostListener deleteQuestionPostListener;
+    private UserDataListener userDataListener;
+    private SwipeRefreshLayout swipeContainer;
     private UserData userData;
     private Uri imageUri;
     private boolean isDownloaded = false;
@@ -63,6 +72,15 @@ public class MyProfileFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         adapter = new PostsRecyclerAdapter(getActivity());
+
+        reloadUserReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                userData = userDataListener.onUserDataChanged();
+                votes.setText(String.valueOf(userData.getVotedQuestionPostsIdList().size()));
+                posts.setText(String.valueOf(userData.getPostedQuestionPostsIdList().size()));
+            }
+        };
     }
 
     @Override
@@ -129,6 +147,15 @@ public class MyProfileFragment extends Fragment {
         };
         viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
 
+        swipeContainer = view.findViewById(R.id.swipeContainerMyProfile);
+        swipeContainer.setOnRefreshListener(() -> {
+            // onRefresh()..
+            LocalBroadcastManager.getInstance(getContext())
+                    .sendBroadcast(new Intent("com.project.ACTION_RELOAD_USER"));
+            swipeContainer.setRefreshing(false);
+        });
+        swipeContainer.setColorSchemeResources(R.color.toolbarColor, R.color.toolbarColorLight, R.color.toolbarColorVeryLight);
+
         RecyclerView recyclerView = view.findViewById(R.id.profileRecycler);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
@@ -148,15 +175,6 @@ public class MyProfileFragment extends Fragment {
             @Override
             public void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost) {
                 deleteQuestionPostListener.onDeleteQuestionPost(adapter, clickedPost, position);
-                Consumer<UserData> userConsumer = new Consumer<UserData>() {
-                    @Override
-                    public void apply(UserData currentUser) {
-                        userData = currentUser;
-                        votes.setText(String.valueOf(userData.getVotedQuestionPostsIdList().size()));
-                        posts.setText(String.valueOf(userData.getPostedQuestionPostsIdList().size()));
-                    }
-                };
-                viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
             }
         });
 
@@ -178,9 +196,27 @@ public class MyProfileFragment extends Fragment {
 
         try {
             deleteQuestionPostListener = (DeleteQuestionPostListener)context;
+            userDataListener = (UserDataListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getContext() != null) {
+            LocalBroadcastManager.getInstance(getContext()).registerReceiver(reloadUserReceiver,
+                    new IntentFilter("com.project.ACTION_RELOAD_USER"));
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(getContext() != null) {
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(reloadUserReceiver);
         }
     }
 }

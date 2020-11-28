@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
     }
 
     @Override
-    public void onUserDataChanged() {
+    public UserData onUserDataChanged() {
         Consumer<UserData> userConsumer = new Consumer<UserData>() {
             @Override
             public void apply(UserData currentUser) {
@@ -356,5 +356,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
             }
         };
         viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
+
+        return userData;
     }
 }

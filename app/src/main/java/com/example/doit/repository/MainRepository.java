@@ -124,8 +124,8 @@ public class MainRepository implements IMainRepository{
     }
 
     @Override
-    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList) {
-        remoteDataSource.deleteQuestionPostIdFromUser(questionPostID, userID, postedQuestionPostsIdList);
+    public void deleteQuestionPostIdFromUser(String questionPostID, String userID, List<String> postedQuestionPostsIdList, Runnable onFinish) {
+        remoteDataSource.deleteQuestionPostIdFromUser(questionPostID, userID, postedQuestionPostsIdList, onFinish);
     }
 
     @Override

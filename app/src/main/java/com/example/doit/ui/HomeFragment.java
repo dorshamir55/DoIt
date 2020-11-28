@@ -113,7 +113,7 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(getContext(), PostAdActivity.class));
         });*/
 
-        swipeContainer = view.findViewById(R.id.swipeContainer);
+        swipeContainer = view.findViewById(R.id.swipeContainerHome);
         swipeContainer.setOnRefreshListener(() -> {
             // onRefresh()..
             viewModel.loadAds(() -> swipeContainer.setRefreshing(false));

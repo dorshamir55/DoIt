@@ -117,8 +117,6 @@ public class UploadPostService extends Service
                             updateUserQuestionPostsIdList(documentSnapshot.getId(), questionPostData.getPostedUserId());
                         }
                     });
-//                    incrementQuestionChoice(questionPostData.getQuestion().getQuestionID());
-//                    updateUserQuestionPostsIdList(questionPostData.getId(), questionPostData.getPostedUserId());
 
                     stopSelf();
                 })
