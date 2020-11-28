@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
         adapter.setRecyclerListener(new PostsRecyclerAdapter.PostsRecyclerListener() {
             @Override
             public void onItemClick(int position, View clickedView, QuestionPostData clickedPost) {
-//                deletePost(position, clickedPost);
+
             }
 
             @Override
@@ -132,24 +132,6 @@ public class HomeFragment extends Fragment {
         });
 
         viewModel.loadAds(null);
-
-    /*@Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.search_bar){
-            cardView = getActivity().findViewById(R.id.card_view_search);
-            if(!cardIsVisible){
-                item.setIcon(R.drawable.ic_opened_details);
-                cardIsVisible=true;
-                cardView.setVisibility(View.VISIBLE);
-            }
-            else {
-                item.setIcon(R.mipmap.ic_search);
-                cardIsVisible=false;
-                cardView.setVisibility(View.GONE);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);*/
     }
 
     private void vote(QuestionPostData clickedPost, int answerVoted){
