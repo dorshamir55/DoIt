@@ -40,6 +40,7 @@ import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
+import com.example.doit.model.VotesClickListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +60,7 @@ public class MyProfileFragment extends Fragment {
     private PostsRecyclerAdapter adapter;
     private DeleteQuestionPostListener deleteQuestionPostListener;
     private UserDataListener userDataListener;
+    private VotesClickListener votesClickListener;
     private BackButtonListener backButtonListener;
     private SwipeRefreshLayout swipeContainer;
     private UserData userData;
@@ -68,6 +70,10 @@ public class MyProfileFragment extends Fragment {
     private TextView nickname, votes, posts;
     private ImageView editIV;
     private String userID;
+
+    public MyProfileFragment(String userID){
+        this.userID = userID;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_my_profile, container, false);
@@ -81,15 +87,12 @@ public class MyProfileFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         adapter = new PostsRecyclerAdapter(getActivity());
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            userID = bundle.getString("userID");
-        }
 
         reloadUserReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                userData = userDataListener.onUserDataChanged();
+                viewModel.loadAds(() -> swipeContainer.setRefreshing(false));
+                userData = userDataListener.onUserDataChanged(userID);
                 votes.setText(String.valueOf(userData.getVotedQuestionPostsIdList().size()));
                 posts.setText(String.valueOf(userData.getPostedQuestionPostsIdList().size()));
             }
@@ -105,6 +108,11 @@ public class MyProfileFragment extends Fragment {
         votes = view.findViewById(R.id.votes_value_text_view);
         posts = view.findViewById(R.id.posts_value_text_view);
         editIV = view.findViewById(R.id.edit_image_nickname_button);
+
+//        Bundle bundle = this.getArguments();
+//        if (bundle != null) {
+//            userID = bundle.getString("userID");
+//        }
 
         if(!currentUser.getUid().equals(userID)){
             editIV.setVisibility(View.GONE);
@@ -169,7 +177,7 @@ public class MyProfileFragment extends Fragment {
             // onRefresh()..
             LocalBroadcastManager.getInstance(getContext())
                     .sendBroadcast(new Intent("com.project.ACTION_RELOAD_USER"));
-            swipeContainer.setRefreshing(false);
+//                showMyPosts(userID);
         });
         swipeContainer.setColorSchemeResources(R.color.toolbarColor, R.color.toolbarColorLight, R.color.toolbarColorVeryLight);
 
@@ -188,7 +196,20 @@ public class MyProfileFragment extends Fragment {
 
             @Override
             public void onVoteClick(int position, View clickedView, QuestionPostData clickedPost, int votedRadiobuttonID) {
-
+                switch (votedRadiobuttonID) {
+                    case R.id.answer1_cell_post:
+                        vote(clickedPost, 0);
+                        break;
+                    case R.id.answer2_cell_post:
+                        vote(clickedPost, 1);
+                        break;
+                    case R.id.answer3_cell_post:
+                        vote(clickedPost, 2);
+                        break;
+                    case R.id.answer4_cell_post:
+                        vote(clickedPost, 3);
+                        break;
+                }
             }
 
             @Override
@@ -216,6 +237,10 @@ public class MyProfileFragment extends Fragment {
         }, 200);
     }
 
+    private void vote(QuestionPostData clickedPost, int answerVoted){
+        votesClickListener.onVote(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -224,6 +249,7 @@ public class MyProfileFragment extends Fragment {
             deleteQuestionPostListener = (DeleteQuestionPostListener)context;
             userDataListener = (UserDataListener)context;
             backButtonListener = (BackButtonListener)context;
+            votesClickListener = (VotesClickListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");

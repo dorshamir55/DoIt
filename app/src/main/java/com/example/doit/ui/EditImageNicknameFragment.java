@@ -183,7 +183,7 @@ public class EditImageNicknameFragment extends Fragment {
 
         try {
             editImageNicknameListener = (EditImageNicknameListener)context;
-            backButtonListener = (BackButtonListener)context;
+//            backButtonListener = (BackButtonListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
@@ -194,13 +194,13 @@ public class EditImageNicknameFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        backButtonListener.onBackButtonClickListener(true);
+//        backButtonListener.onBackButtonClickListener(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        backButtonListener.onBackButtonClickListener(false);
+//        backButtonListener.onBackButtonClickListener(false);
     }
 }

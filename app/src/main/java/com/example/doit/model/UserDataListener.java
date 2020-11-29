@@ -1,5 +1,5 @@
 package com.example.doit.model;
 
 public interface UserDataListener {
-    public UserData onUserDataChanged();
+    public UserData onUserDataChanged(String userID);
 }

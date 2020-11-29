@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         FragmentManager manager = getSupportFragmentManager();
         boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
         
-        if (!fragmentPopped){ //fragment not in back stack, create it.
+        if (!fragmentPopped) {// || fragmentPopped && fragment instanceof MyProfileFragment){ //fragment not in back stack, create it.
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.nav_host_fragment, fragment);
             ft.addToBackStack(backStateName);
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
                         if(onFinish != null)
                             onFinish.run();
                         manager.popBackStack();
-                        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment()).commit();
+                        manager.beginTransaction().replace(R.id.nav_host_fragment, new MyProfileFragment(id)).commit();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -345,14 +345,14 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
     }
 
     @Override
-    public UserData onUserDataChanged() {
+    public UserData onUserDataChanged(String userID) {
         Consumer<UserData> userConsumer = new Consumer<UserData>() {
             @Override
             public void apply(UserData currentUser) {
                 userData = currentUser;
             }
         };
-        viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
+        viewModel.getCurrentUserData(userID, userConsumer);
 
         return userData;
     }
@@ -384,10 +384,11 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
     }
 
     public void moveToProfile(String userID){
-        MyProfileFragment myProfileFragment = new MyProfileFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("userID", userID);
-        myProfileFragment.setArguments(bundle);
+        MyProfileFragment myProfileFragment = new MyProfileFragment(userID);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("userID", userID);
+//        bundle.putString("userID", userID);
+//        myProfileFragment.setArguments(bundle);
         replaceFragment(myProfileFragment);
     }
 }

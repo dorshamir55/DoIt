@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 if(viewModel != null) {
                     viewModel.loadAds(null);
-                    userDataListener.onUserDataChanged();
+                    userDataListener.onUserDataChanged(currentUser.getUid());
                 }
             }
         };
