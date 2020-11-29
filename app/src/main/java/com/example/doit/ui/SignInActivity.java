@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.EditImageNicknameListener;
 import com.example.doit.model.UserData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,8 +36,7 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class SignInActivity extends AppCompatActivity
-        implements GoogleFacebookLoginFragment.GoogleFacebookLoginFragmentClickListener,
-                EditImageNicknameFragment.EditImageNicknameFragmentClickListener{
+        implements GoogleFacebookLoginFragment.GoogleFacebookLoginFragmentClickListener, EditImageNicknameListener {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;

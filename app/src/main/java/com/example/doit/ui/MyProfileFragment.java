@@ -33,8 +33,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
 import com.example.doit.adapter.PostsRecyclerAdapter;
+import com.example.doit.model.BackButtonListener;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.DeleteQuestionPostListener;
+import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
@@ -51,12 +53,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyProfileFragment extends Fragment {
     private IMainViewModel viewModel = null;
-    private BroadcastReceiver reloadUserReceiver;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    private BroadcastReceiver reloadUserReceiver;
     private PostsRecyclerAdapter adapter;
     private DeleteQuestionPostListener deleteQuestionPostListener;
     private UserDataListener userDataListener;
+    private BackButtonListener backButtonListener;
     private SwipeRefreshLayout swipeContainer;
     private UserData userData;
     private Uri imageUri;
@@ -64,6 +67,7 @@ public class MyProfileFragment extends Fragment {
     private CircleImageView profileImage;
     private TextView nickname, votes, posts;
     private ImageView editIV;
+    private String userID;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_my_profile, container, false);
@@ -77,6 +81,10 @@ public class MyProfileFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         adapter = new PostsRecyclerAdapter(getActivity());
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            userID = bundle.getString("userID");
+        }
 
         reloadUserReceiver = new BroadcastReceiver() {
             @Override
@@ -97,6 +105,10 @@ public class MyProfileFragment extends Fragment {
         votes = view.findViewById(R.id.votes_value_text_view);
         posts = view.findViewById(R.id.posts_value_text_view);
         editIV = view.findViewById(R.id.edit_image_nickname_button);
+
+        if(!currentUser.getUid().equals(userID)){
+            editIV.setVisibility(View.GONE);
+        }
 
         editIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +162,7 @@ public class MyProfileFragment extends Fragment {
                 }
             }
         };
-        viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
+        viewModel.getCurrentUserData(userID, userConsumer);
 
         swipeContainer = view.findViewById(R.id.swipeContainerMyProfile);
         swipeContainer.setOnRefreshListener(() -> {
@@ -166,7 +178,7 @@ public class MyProfileFragment extends Fragment {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-        showMyPosts();
+        showMyPosts(userID);
 
         adapter.setRecyclerListener(new PostsRecyclerAdapter.PostsRecyclerListener() {
             @Override
@@ -183,10 +195,15 @@ public class MyProfileFragment extends Fragment {
             public void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost) {
                 deleteQuestionPostListener.onDeleteQuestionPost(adapter, clickedPost, position);
             }
+
+            @Override
+            public void onNicknameClick(String userID) {
+
+            }
         });
     }
 
-    public void showMyPosts(){
+    public void showMyPosts(String userID){
         new Handler().postDelayed(()-> {
             Consumer<List<QuestionPostData>> consumerList = new Consumer<List<QuestionPostData>>() {
                 @Override
@@ -195,7 +212,7 @@ public class MyProfileFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                 }
             };
-            viewModel.searchMyPostsAndRun(consumerList, auth.getCurrentUser().getUid());
+            viewModel.searchMyPostsAndRun(consumerList, userID);
         }, 200);
     }
 
@@ -206,6 +223,7 @@ public class MyProfileFragment extends Fragment {
         try {
             deleteQuestionPostListener = (DeleteQuestionPostListener)context;
             userDataListener = (UserDataListener)context;
+            backButtonListener = (BackButtonListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
@@ -219,6 +237,10 @@ public class MyProfileFragment extends Fragment {
             LocalBroadcastManager.getInstance(getContext()).registerReceiver(reloadUserReceiver,
                     new IntentFilter("com.project.ACTION_RELOAD_USER"));
         }
+
+        if(!currentUser.getUid().equals(userID)){
+            backButtonListener.onBackButtonClickListener(true);
+        }
     }
 
     @Override
@@ -226,6 +248,10 @@ public class MyProfileFragment extends Fragment {
         super.onPause();
         if(getContext() != null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(reloadUserReceiver);
+        }
+
+        if(!currentUser.getUid().equals(userID)){
+            backButtonListener.onBackButtonClickListener(false);
         }
     }
 

@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.example.doit.R;
 import com.example.doit.adapter.ChoosePictureAccountAdapter;
+import com.example.doit.model.BackButtonListener;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.EditImageNicknameListener;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.UserData;
 import com.example.doit.viewmodel.IMainViewModel;
@@ -41,7 +43,8 @@ public class EditImageNicknameFragment extends Fragment {
     private FirebaseUser currentUser;
     public static final String TAG = "FIRST_SIGN_IN_FRG";
     public static final String PROFILE_IMAGES_FOLDER = "profile_pictures/";
-    private EditImageNicknameFragmentClickListener listener;
+    private EditImageNicknameListener editImageNicknameListener;
+    private BackButtonListener backButtonListener;
     private ChoosePictureAccountAdapter adapter;
     private ChoosePictureAccountAdapter.MyPictureListener pictureListener;
     private UserData userData;
@@ -124,7 +127,7 @@ public class EditImageNicknameFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadingBar.setVisibility(View.VISIBLE);
-                listener.onSkip(() -> loadingBar.setVisibility(View.INVISIBLE));
+                editImageNicknameListener.onSkip(() -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
 
@@ -145,7 +148,7 @@ public class EditImageNicknameFragment extends Fragment {
                     return;
                 }
                 loadingBar.setVisibility(View.VISIBLE);
-                listener.onImageAndNickname(nickname, ChoosePictureAccountAdapter.currentImageSelectedName,
+                editImageNicknameListener.onImageAndNickname(nickname, ChoosePictureAccountAdapter.currentImageSelectedName,
                         () -> loadingBar.setVisibility(View.INVISIBLE));
             }
         });
@@ -164,12 +167,14 @@ public class EditImageNicknameFragment extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
 
+        loadingBar.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                loadingBar.setVisibility(View.INVISIBLE);
                 adapter.notifyDataSetChanged();
             }
-        }, 1000);
+        }, 1500);
     }
 
     @Override
@@ -177,15 +182,25 @@ public class EditImageNicknameFragment extends Fragment {
         super.onAttach(context);
 
         try {
-            listener = (EditImageNicknameFragment.EditImageNicknameFragmentClickListener)context;
+            editImageNicknameListener = (EditImageNicknameListener)context;
+            backButtonListener = (BackButtonListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
         }
     }
 
-    public static interface EditImageNicknameFragmentClickListener {
-        public void onSkip(Runnable onFinish);
-        public void onImageAndNickname(String nickname, String profileImage, Runnable onFinish);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        backButtonListener.onBackButtonClickListener(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        backButtonListener.onBackButtonClickListener(false);
     }
 }

@@ -26,6 +26,7 @@ import com.example.doit.model.DeleteQuestionPostListener;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
+import com.example.doit.model.UserProfileListener;
 import com.example.doit.model.VotesClickListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
@@ -39,10 +40,10 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
     private PostsRecyclerAdapter adapter;// = new PostsRecyclerAdapter(getActivity());
     private BroadcastReceiver reloadAdsReceiver;
+    private UserProfileListener userProfileListener;
     private VotesClickListener votesClickListener;
     private DeleteQuestionPostListener deleteQuestionPostListener;
     private UserDataListener userDataListener;
-    private UserData userData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,6 +107,11 @@ public class HomeFragment extends Fragment {
 //                deletePost(position, clickedPost);
                 deleteQuestionPostListener.onDeleteQuestionPost(adapter, clickedPost, position);
             }
+
+            @Override
+            public void onNicknameClick(String userID) {
+                userProfileListener.onClickUserProfile(userID);
+            }
         });
 
 /*      FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -156,6 +162,7 @@ public class HomeFragment extends Fragment {
         super.onAttach(context);
 
         try {
+            userProfileListener = (UserProfileListener) context;
             votesClickListener = (VotesClickListener)context;
             deleteQuestionPostListener = (DeleteQuestionPostListener)context;
             userDataListener = (UserDataListener)context;

@@ -105,14 +105,14 @@ public class UserSearchRecyclerAdapter extends RecyclerView.Adapter<UserSearchRe
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
                     assert listData != null;
-                    listener.onItemClick(getAdapterPosition(), view, listData.get(getAdapterPosition()));
+                    listener.onItemClick(getAdapterPosition(), view, listData.get(getAdapterPosition()).getId());
                 }
             });
         }
     }
 
     public static interface UserSearchRecyclerListener {
-        void onItemClick(int position, View clickedView, UserData userData);
+        void onItemClick(int position, View clickedView, String userID);
     }
 
     @Override

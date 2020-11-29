@@ -21,8 +21,10 @@ import com.example.doit.R;
 import com.example.doit.adapter.UserSearchRecyclerAdapter;
 import com.example.doit.model.BackButtonListener;
 import com.example.doit.model.Consumer;
+import com.example.doit.model.Keyboard;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.UserData;
+import com.example.doit.model.UserProfileListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 
@@ -32,6 +34,7 @@ public class SearchFragment extends Fragment {
     private IMainViewModel viewModel = null;
     private UserSearchRecyclerAdapter adapter;
     private BackButtonListener backButtonListener;
+    private UserProfileListener userProfileListener;
     private List<UserData> allUsersList;
     private SearchView searchView;
     private MenuItem searchItem;
@@ -59,6 +62,14 @@ public class SearchFragment extends Fragment {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+
+        adapter.setRecyclerListener(new UserSearchRecyclerAdapter.UserSearchRecyclerListener() {
+            @Override
+            public void onItemClick(int position, View clickedView, String userID) {
+                Keyboard.hideKeyboard(getActivity());
+                userProfileListener.onClickUserProfile(userID);
+            }
+        });
     }
 
     @Override
@@ -113,6 +124,7 @@ public class SearchFragment extends Fragment {
         super.onAttach(context);
         try{
             backButtonListener = (BackButtonListener)context;
+            userProfileListener = (UserProfileListener) context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");

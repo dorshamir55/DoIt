@@ -362,6 +362,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                 }
             });
 
+            nickname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onNicknameClick(listData.get(getAdapterPosition()).getPostedUserId());
+                }
+            });
+
             voteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -404,6 +411,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         void onItemClick(int position, View clickedView, QuestionPostData clickedPost);
         void onVoteClick(int position, View clickedView, QuestionPostData clickedPost, int votedRadiobuttonID);
         void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost);
+        void onNicknameClick(String userID);
     }
 
     public class WebAppInterface

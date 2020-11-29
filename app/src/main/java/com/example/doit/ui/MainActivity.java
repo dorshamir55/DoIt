@@ -36,11 +36,13 @@ import com.example.doit.model.BackButtonListener;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.ContextWrapper;
 import com.example.doit.model.DeleteQuestionPostListener;
+import com.example.doit.model.EditImageNicknameListener;
 import com.example.doit.model.Keyboard;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
+import com.example.doit.model.UserProfileListener;
 import com.example.doit.model.VotesClickListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
@@ -59,8 +61,8 @@ import java.util.Locale;
 import java.util.Map;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
-public class MainActivity extends AppCompatActivity implements EditImageNicknameFragment.EditImageNicknameFragmentClickListener,
-        VotesClickListener, DeleteQuestionPostListener, UserDataListener, BackButtonListener {
+public class MainActivity extends AppCompatActivity implements EditImageNicknameListener, VotesClickListener,
+        DeleteQuestionPostListener, UserDataListener, BackButtonListener, UserProfileListener {
     public static boolean isSignInNow = true;
     private IMainViewModel viewModel = null;
     private AppBarConfiguration mAppBarConfiguration;
@@ -141,17 +143,14 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_home:
-//                        switchToHomeFragment();
                         replaceFragment(new HomeFragment());
                         break;
 
                     case R.id.action_search:
-//                        switchToHomeFragment();
                         replaceFragment(new SearchFragment());
                         break;
 
                     case R.id.action_add:
-//                        switchToAddPostFragment();
                         replaceFragment(new AddPostFragment());
                         break;
 
@@ -160,8 +159,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
                         break;
 
                     case R.id.action_profile:
-//                        switchToProfileFragment();
-                        replaceFragment(new MyProfileFragment());
+                        moveToProfile(currentUser.getUid());
                         break;
                 }
                 return true;
@@ -378,5 +376,18 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             setSupportActionBar(toolbar);
         }
+    }
+
+    @Override
+    public void onClickUserProfile(String userID) {
+        moveToProfile(userID);
+    }
+
+    public void moveToProfile(String userID){
+        MyProfileFragment myProfileFragment = new MyProfileFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("userID", userID);
+        myProfileFragment.setArguments(bundle);
+        replaceFragment(myProfileFragment);
     }
 }
