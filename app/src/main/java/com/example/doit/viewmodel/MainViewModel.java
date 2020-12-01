@@ -24,7 +24,6 @@ import java.util.List;
 public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     private IMainRepository mainRepository;
     private LiveData<List<QuestionPostData>> questionPostLiveData;
-    private LiveData<List<QuestionPostData>> myQuestionPostLiveData;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -35,6 +34,11 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     @Override
     public LiveData<List<QuestionPostData>> getPostsLiveData() {
         return questionPostLiveData;
+    }
+
+    @Override
+    public LiveData<List<QuestionPostData>> getMyPostsLiveData(String userID) {
+        return mainRepository.getMyPostsLiveData(userID);
     }
 
     @Override

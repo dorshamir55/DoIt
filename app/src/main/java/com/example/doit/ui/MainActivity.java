@@ -37,7 +37,6 @@ import com.example.doit.model.Consumer;
 import com.example.doit.model.ContextWrapper;
 import com.example.doit.model.DeleteQuestionPostListener;
 import com.example.doit.model.EditImageNicknameListener;
-import com.example.doit.model.Keyboard;
 import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
@@ -373,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
                 @Override
                 public void onClick(View v) {
                     onBackPressed();
-                    Keyboard.hideKeyboard(MainActivity.this);
                 }
             });
         }

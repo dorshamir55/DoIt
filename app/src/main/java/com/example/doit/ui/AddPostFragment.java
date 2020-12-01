@@ -77,6 +77,7 @@ public class AddPostFragment extends Fragment {
 
         searchItem.setVisible(false);
         backButtonListener.onBackButtonClickListener(false);
+        Keyboard.hideKeyboard(getActivity());
     }
 
     @Override

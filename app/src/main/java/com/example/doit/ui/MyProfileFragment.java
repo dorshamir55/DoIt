@@ -91,7 +91,7 @@ public class MyProfileFragment extends Fragment {
         reloadUserReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                viewModel.loadAds(() -> swipeContainer.setRefreshing(false));
+                viewModel.loadAds(null);
 //                userData = userDataListener.onUserDataChanged(userID);
                 Consumer<UserData> userConsumer = new Consumer<UserData>() {
                     @Override
@@ -182,18 +182,31 @@ public class MyProfileFragment extends Fragment {
         swipeContainer = view.findViewById(R.id.swipeContainerMyProfile);
         swipeContainer.setOnRefreshListener(() -> {
             // onRefresh()..
-            LocalBroadcastManager.getInstance(getContext())
-                    .sendBroadcast(new Intent("com.project.ACTION_RELOAD_USER"));
-//                showMyPosts(userID);
+            Consumer<UserData> userConsumerRefresh = new Consumer<UserData>() {
+                @Override
+                public void apply(UserData currentUser) {
+                    userData = currentUser;
+                    votes.setText(String.valueOf(userData.getVotedQuestionPostsIdList().size()));
+                    posts.setText(String.valueOf(userData.getPostedQuestionPostsIdList().size()));
+                }
+            };
+            viewModel.getCurrentUserData(userID, userConsumerRefresh);
+
+            viewModel.loadAds(() -> swipeContainer.setRefreshing(false));
         });
         swipeContainer.setColorSchemeResources(R.color.toolbarColor, R.color.toolbarColorLight, R.color.toolbarColorVeryLight);
+
+        viewModel.getMyPostsLiveData(userID).observe(getViewLifecycleOwner(), postsList -> {
+            adapter.setData(postsList);
+            adapter.notifyDataSetChanged();
+        });
 
         RecyclerView recyclerView = view.findViewById(R.id.profileRecycler);
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-        showMyPosts(userID);
+//        showMyPosts(userID);
 
         adapter.setRecyclerListener(new PostsRecyclerAdapter.PostsRecyclerListener() {
             @Override

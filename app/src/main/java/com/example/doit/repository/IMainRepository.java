@@ -17,6 +17,7 @@ import java.util.List;
 public interface IMainRepository {
     public void loadAds(Runnable onFinish);
     public LiveData<List<QuestionPostData>> getPostsLiveData();
+    public LiveData<List<QuestionPostData>> getMyPostsLiveData(String userID);
     public void deletePost(QuestionPostData questionPostData, Runnable onFinish);
     public void getListOfQuestions(Consumer<List<QuestionFireStore>> consumerList);
     public void getListOfAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions);

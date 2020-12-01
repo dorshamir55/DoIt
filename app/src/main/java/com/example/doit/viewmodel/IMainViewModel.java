@@ -16,6 +16,7 @@ import java.util.List;
 
 public interface IMainViewModel {
     public LiveData<List<QuestionPostData>> getPostsLiveData();
+    public LiveData<List<QuestionPostData>> getMyPostsLiveData(String userID);
     public void loadAds(Runnable onFinish);
     public void deletePost(QuestionPostData questionPostData);
     public void getListOfQuestions(Consumer<List<QuestionFireStore>> consumerList);

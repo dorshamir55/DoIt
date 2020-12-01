@@ -305,7 +305,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         legend.setWordWrapEnabled(true);
 
         Description description = new Description();
-        String descriptionString = activity.getResources().getString(R.string.voted) + pieChartHelper.getSumOfVotes();
+        String descriptionString = pieChartHelper.getSumOfVotes() + " " + activity.getResources().getString(R.string.votes).toLowerCase();
         description.setText(descriptionString);
         holder.pieChart.setDescription(description);
 //        holder.pieChart.notifyDataSetChanged();

@@ -66,7 +66,6 @@ public class SearchFragment extends Fragment {
         adapter.setRecyclerListener(new UserSearchRecyclerAdapter.UserSearchRecyclerListener() {
             @Override
             public void onItemClick(int position, View clickedView, String userID) {
-                Keyboard.hideKeyboard(getActivity());
                 userProfileListener.onClickUserProfile(userID);
             }
         });
@@ -78,6 +77,7 @@ public class SearchFragment extends Fragment {
 
         searchItem.setVisible(false);
         backButtonListener.onBackButtonClickListener(false);
+        Keyboard.hideKeyboard(getActivity());
     }
 
     @Override

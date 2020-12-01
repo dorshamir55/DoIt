@@ -78,6 +78,11 @@ public class MainRepository implements IMainRepository{
     }
 
     @Override
+    public LiveData<List<QuestionPostData>> getMyPostsLiveData(String userID) {
+        return adDAO.getMyPosts(userID);
+    }
+
+    @Override
     public void deletePost(QuestionPostData questionPostData, Runnable onFinish) {
         //doAsynch(()->adDAO.deleteAd(questionPostData));
         remoteDataSource.removePost(questionPostData.getId(), onFinish);
@@ -137,7 +142,7 @@ public class MainRepository implements IMainRepository{
     public void searchMyPostsAndRun(Consumer<List<QuestionPostData>> consumerList, String userID) {
         Handler handler = new Handler();
         doAsynch(()->{
-            List<QuestionPostData> data = adDAO.getMyPostsLiveData(userID);
+            List<QuestionPostData> data = adDAO.getMyPosts(userID).getValue();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
