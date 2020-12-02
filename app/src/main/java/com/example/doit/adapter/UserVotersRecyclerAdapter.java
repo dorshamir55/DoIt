@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
-import com.example.doit.model.LocalHelper;
 import com.example.doit.model.UserData;
 import com.example.doit.ui.EditImageNicknameFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,25 +23,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserSearchRecyclerAdapter extends RecyclerView.Adapter<UserSearchRecyclerAdapter.RecyclerViewHolder> implements Filterable {
+public class UserVotersRecyclerAdapter extends RecyclerView.Adapter<UserVotersRecyclerAdapter.RecyclerViewHolder> {
 
     @Nullable
-    private List<UserData> listData, listDataFull;
-    private UserSearchRecyclerListener listener;
-    private LocalHelper localHelper;
+    private List<UserData> listData;
+    private UserVotersRecyclerListener listener;
     private Activity activity;
-    private String currentLanguage;
 
-    public UserSearchRecyclerAdapter(Activity activity) {
+    public UserVotersRecyclerAdapter(Activity activity) {
         this.activity = activity;
-        this.localHelper = new LocalHelper(activity);
-        this.currentLanguage = localHelper.getLocale();
     }
 
     public void setData(List<UserData> data) {
         if(data!=null) {
-            listData = new ArrayList<>();
-            listDataFull = new ArrayList<UserData>(data);
+            listData = new ArrayList<>(data);
         }
     }
 
@@ -52,7 +44,7 @@ public class UserSearchRecyclerAdapter extends RecyclerView.Adapter<UserSearchRe
         return listData;
     }
 
-    public void setRecyclerListener(UserSearchRecyclerListener listener) {
+    public void setRecyclerListener(UserVotersRecyclerListener listener) {
         this.listener = listener;
     }
 
@@ -109,44 +101,8 @@ public class UserSearchRecyclerAdapter extends RecyclerView.Adapter<UserSearchRe
         }
     }
 
-    public static interface UserSearchRecyclerListener {
+    public static interface UserVotersRecyclerListener {
         void onItemClick(int position, View clickedView, String userID);
     }
-
-    @Override
-    public Filter getFilter() {
-        return filter;
-    }
-
-    private Filter filter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<UserData> filterList = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filterList.clear();
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (UserData userData : listDataFull) {
-                    if (userData.getNickName().toLowerCase().contains(filterPattern)) {
-                        filterList.add(userData);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filterList;
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            if(listData != null){
-                listData.clear();
-                listData.addAll((List)results.values);
-                notifyDataSetChanged();
-            }
-        }
-    };
 }
 

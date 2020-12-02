@@ -1,6 +1,7 @@
 package com.example.doit.remote;
 
 import android.net.Uri;
+import android.os.Handler;
 import android.text.method.LinkMovementMethod;
 import android.widget.Toast;
 
@@ -117,6 +118,28 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                     if(consumerList != null)
                         consumerList.apply(data);
                 });
+    }
+
+    @Override
+    public void fetchUsersByIds(List<AnswerInPost> answersInPost, Consumer<List<UserData>> consumerList) {
+        List<UserData> users = new ArrayList<>();
+        for(AnswerInPost answerInPost : answersInPost){
+            for(String votedUserId : answerInPost.getVotedUserIdList()){
+                db.collection(UserData.TABLE_NAME).document(votedUserId)
+                        .get().addOnCompleteListener(task -> {
+                    UserData userData = null;
+                    if(task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        userData = documentSnapshot.toObject(UserData.class).withId(votedUserId);
+                        users.add(userData);
+                        if(consumerList != null)
+                            consumerList.apply(users);
+                    } else {
+                        task.getException().printStackTrace();
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -239,19 +262,19 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                     }
                 }
                 db.collection(QuestionFireStore.TABLE_NAME).document(questionID)
-                            .update("answersInQuestion", allAnswersInQuestion)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
+                        .update("answersInQuestion", allAnswersInQuestion)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
 
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                                }
-                            });
+                            }
+                        });
             }
         };
         fetchAllAnswersInQuestion(questionID, consumer);
@@ -261,16 +284,16 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
     public void getCurrentUserData(String uid, Consumer<UserData> userConsumer) {
         db.collection(UserData.TABLE_NAME).document(uid)
                 .get().addOnCompleteListener(task -> {
-                    UserData userData = null;
-                    if(task.isSuccessful()){
-                        userData = new UserData();
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        userData = documentSnapshot.toObject(UserData.class).withId(uid);
-                    } else {
-                        task.getException().printStackTrace();
-                    }
-                    if(userConsumer != null)
-                        userConsumer.apply(userData);
+            UserData userData = null;
+            if(task.isSuccessful()){
+                userData = new UserData();
+                DocumentSnapshot documentSnapshot = task.getResult();
+                userData = documentSnapshot.toObject(UserData.class).withId(uid);
+            } else {
+                task.getException().printStackTrace();
+            }
+            if(userConsumer != null)
+                userConsumer.apply(userData);
         });
     }
 
@@ -290,7 +313,7 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                         });
                     }
 //                    if(uriConsumer!=null)
-                        uriConsumer.apply(uriList);
+                    uriConsumer.apply(uriList);
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -377,16 +400,16 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
 
         db.collection(QuestionFireStore.TABLE_NAME).document(questionID)
                 .get().addOnCompleteListener(task -> {
-                    List<AnswerInQuestion> data = null;
-                    if (task.isSuccessful()) {
-                        data = new ArrayList<>();
-                        DocumentSnapshot documentSnapshot = task.getResult();
-                        data.addAll(documentSnapshot.toObject(QuestionFireStore.class).getAnswersInQuestion());
-                    } else {
-                        task.getException().printStackTrace();
-                    }
-                    if(consumerList != null)
-                        consumerList.apply(data);
-                });
+            List<AnswerInQuestion> data = null;
+            if (task.isSuccessful()) {
+                data = new ArrayList<>();
+                DocumentSnapshot documentSnapshot = task.getResult();
+                data.addAll(documentSnapshot.toObject(QuestionFireStore.class).getAnswersInQuestion());
+            } else {
+                task.getException().printStackTrace();
+            }
+            if(consumerList != null)
+                consumerList.apply(data);
+        });
     }
 }

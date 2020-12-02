@@ -205,6 +205,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             if(pieChartHelper.getSumOfVotes() == 0) {
                 holder.answersAndVote.setVisibility(View.GONE);
                 holder.pieChart.setVisibility(View.GONE);
+                holder.votesDescription.setVisibility(View.GONE);
                 holder.noVotes.setVisibility(View.VISIBLE);
             }
             else{
@@ -214,11 +215,13 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         else if(pieChartHelper.getSumOfVotes() == 0 && isItMyPost(position)){
             holder.answersAndVote.setVisibility(View.GONE);
             holder.pieChart.setVisibility(View.GONE);
+            holder.votesDescription.setVisibility(View.GONE);
             holder.noVotes.setVisibility(View.VISIBLE);
         }
         else if(!alreadyVoted(position) && !isItMyPost(position)) {
             holder.answersAndVote.setVisibility(View.VISIBLE);
             holder.pieChart.setVisibility(View.GONE);
+            holder.votesDescription.setVisibility(View.GONE);
             holder.noVotes.setVisibility(View.GONE);
             holder.answer1.setText(listData.get(position).getAnswers().get(0).getTextByLanguage(currentLanguage));
             holder.answer2.setText(listData.get(position).getAnswers().get(1).getTextByLanguage(currentLanguage));
@@ -305,11 +308,16 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         legend.setWordWrapEnabled(true);
 
         Description description = new Description();
-        String descriptionString = pieChartHelper.getSumOfVotes() + " " + activity.getResources().getString(R.string.votes).toLowerCase();
-        description.setText(descriptionString);
+//        String descriptionString = pieChartHelper.getSumOfVotes() + " " + activity.getResources().getString(R.string.votes).toLowerCase();
+//        description.setText(descriptionString);
+        description.setText("");
         holder.pieChart.setDescription(description);
 //        holder.pieChart.notifyDataSetChanged();
         holder.pieChart.invalidate();
+
+        String descriptionString = pieChartHelper.getSumOfVotes() + " " + activity.getResources().getString(R.string.votes).toLowerCase();
+        holder.votesDescription.setText(descriptionString);
+        holder.votesDescription.setVisibility(View.VISIBLE);
     }
 
     private boolean alreadyVoted(int position) {
@@ -332,7 +340,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         private WebView webView;
         private ImageView imageNickName, imageOptions;
         private Uri imageUri;
-        private TextView nickname, question, noVotes;
+        private TextView nickname, question, noVotes, votesDescription;
         private RadioGroup answersGroup;
         private RadioButton answer1, answer2, answer3, answer4;
         private Button voteButton;
@@ -354,6 +362,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
             answer3 = itemView.findViewById(R.id.answer3_cell_post);
             answer4 = itemView.findViewById(R.id.answer4_cell_post);
             voteButton = itemView.findViewById(R.id.vote_cell_post);
+            votesDescription = itemView.findViewById(R.id.votes_description);
 
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
@@ -404,6 +413,16 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                     }
                 }
             });
+
+            votesDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null) {
+                        assert listData != null;
+                        listener.onVotersClick(listData.get(getAdapterPosition()).getAnswers());
+                    }
+                }
+            });
         }
     }
 
@@ -412,6 +431,7 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
         void onVoteClick(int position, View clickedView, QuestionPostData clickedPost, int votedRadiobuttonID);
         void onDeleteClick(int position, MenuItem item, QuestionPostData clickedPost);
         void onNicknameClick(String userID);
+        void onVotersClick(List<AnswerInPost> answersInPost);
     }
 
     public class WebAppInterface

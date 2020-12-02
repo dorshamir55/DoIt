@@ -22,17 +22,21 @@ import android.view.ViewGroup;
 
 import com.example.doit.R;
 import com.example.doit.adapter.PostsRecyclerAdapter;
+import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.DeleteQuestionPostListener;
 import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
 import com.example.doit.model.UserProfileListener;
+import com.example.doit.model.VotersListener;
 import com.example.doit.model.VotesClickListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     private FirebaseAuth auth;
@@ -44,6 +48,7 @@ public class HomeFragment extends Fragment {
     private UserProfileListener userProfileListener;
     private VotesClickListener votesClickListener;
     private DeleteQuestionPostListener deleteQuestionPostListener;
+    private VotersListener votersListener;
     private UserDataListener userDataListener;
     private UserData userData;
 
@@ -121,6 +126,11 @@ public class HomeFragment extends Fragment {
             public void onNicknameClick(String userID) {
                 userProfileListener.onClickUserProfile(userID);
             }
+
+            @Override
+            public void onVotersClick(List<AnswerInPost> answersInPost) {
+                votersListener.onVoterClickListener(answersInPost);
+            }
         });
 
 /*      FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -181,6 +191,7 @@ public class HomeFragment extends Fragment {
             userProfileListener = (UserProfileListener) context;
             votesClickListener = (VotesClickListener)context;
             deleteQuestionPostListener = (DeleteQuestionPostListener)context;
+            votersListener = (VotersListener)context;
 //            userDataListener = (UserDataListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +

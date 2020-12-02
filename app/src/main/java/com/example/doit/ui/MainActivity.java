@@ -42,6 +42,7 @@ import com.example.doit.model.QuestionPostData;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserDataListener;
 import com.example.doit.model.UserProfileListener;
+import com.example.doit.model.VotersListener;
 import com.example.doit.model.VotesClickListener;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
@@ -61,7 +62,7 @@ import java.util.Map;
 //import com.example.doit.service.MyFirebaseMessagingService;
 
 public class MainActivity extends AppCompatActivity implements EditImageNicknameListener, VotesClickListener,
-        DeleteQuestionPostListener, /*UserDataListener, */BackButtonListener, UserProfileListener {
+        DeleteQuestionPostListener, /*UserDataListener, */BackButtonListener, UserProfileListener, VotersListener {
     public static boolean isSignInNow = true;
     public int i = 0;
     private IMainViewModel viewModel = null;
@@ -394,5 +395,10 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
 //        bundle.putString("userID", userID);
 //        myProfileFragment.setArguments(bundle);
         replaceFragment(myProfileFragment);
+    }
+
+    @Override
+    public void onVoterClickListener(List<AnswerInPost> answersInPost) {
+        replaceFragment(new VotersFragment(answersInPost));
     }
 }

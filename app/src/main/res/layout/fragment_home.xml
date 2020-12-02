@@ -5,25 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeContainerHome"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainerHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mainRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_margin="@dimen/fab_margin"-->
-<!--        android:backgroundTint="@color/barColor"-->
-<!--        app:srcCompat="@drawable/ic_add" />-->
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fab"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="bottom|end"-->
+    <!--        android:layout_margin="@dimen/fab_margin"-->
+    <!--        android:backgroundTint="@color/barColor"-->
+    <!--        app:srcCompat="@drawable/ic_add" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

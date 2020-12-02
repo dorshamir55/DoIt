@@ -181,13 +181,25 @@
                 android:layout_height="180dp"
                 android:layout_margin="10dp"
                 android:visibility="gone"/>
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="gone"
-                android:gravity="center_horizontal"/>
 
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/votes_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+            <TextView
+                android:id="@+id/votes_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/votes"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="14sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
     <View
