@@ -380,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         else{
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
+            setSupportActionBar(toolbar);
         }
     }
 
@@ -411,12 +412,12 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
     @Override
     public void onChangeLabelGoneListener() {
         toolbar.setTitleTextColor(Color.WHITE);
-        setTitle("");
+        getSupportActionBar().setTitle("");
         toolbarTitleTV.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onChangeLabelTextListener(String title) {
-        setTitle(title);
+        getSupportActionBar().setTitle(title);
     }
 }

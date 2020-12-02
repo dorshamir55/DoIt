@@ -19,6 +19,7 @@ import com.example.doit.adapter.UserSearchRecyclerAdapter;
 import com.example.doit.adapter.UserVotersRecyclerAdapter;
 import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.BackButtonListener;
+import com.example.doit.model.ChangeLabelListener;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.UserData;
 import com.example.doit.model.UserProfileListener;
@@ -32,6 +33,7 @@ public class VotersFragment extends Fragment {
     private IMainViewModel viewModel = null;
     private BackButtonListener backButtonListener;
     private UserProfileListener userProfileListener;
+    private ChangeLabelListener changeLabelListener;
     private UserVotersRecyclerAdapter adapter;
     private List<AnswerInPost> answersInPost;
     private List<UserData> userDataList;
@@ -76,8 +78,10 @@ public class VotersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        changeLabelListener.onChangeLabelVisibleListener();
+        changeLabelListener.onChangeLabelTextListener(getResources().getString(R.string.voters));
         backButtonListener.onBackButtonClickListener(true);
+
 
 //        Consumer<List<UserData>> consumerList = new Consumer<List<UserData>>() {
 //            @Override
@@ -103,8 +107,9 @@ public class VotersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
         backButtonListener.onBackButtonClickListener(false);
+        changeLabelListener.onChangeLabelGoneListener();
+
     }
 
     @Override
@@ -114,6 +119,7 @@ public class VotersFragment extends Fragment {
         try {
             backButtonListener = (BackButtonListener)context;
             userProfileListener = (UserProfileListener)context;
+            changeLabelListener = (ChangeLabelListener)context;
         } catch(ClassCastException ex) {
             throw new ClassCastException("NOTE! The activity must implement the fragment's listener" +
                     " interface!");
