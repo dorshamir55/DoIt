@@ -90,6 +90,9 @@ public class ChooseAnswersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        changeLabelListener.onChangeLabelVisibleListener();
+        changeLabelListener.onChangeLabelTextListener(getResources().getString(R.string.upload_post));
+
         questionTextView = view.findViewById(R.id.selected_question);
         hoursS = view.findViewById(R.id.choose_hours_spinner);
         minutesS = view.findViewById(R.id.choose_minutes_spinner);
@@ -232,8 +235,8 @@ public class ChooseAnswersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        changeLabelListener.onChangeLabelVisibleListener();
-//        changeLabelListener.onChangeLabelTextListener(getResources().getString(R.string.upload_post));
+        changeLabelListener.onChangeLabelVisibleListener();
+        changeLabelListener.onChangeLabelTextListener(getResources().getString(R.string.upload_post));
 
         backButtonListener.onBackButtonClickListener(true);
     }
@@ -241,7 +244,7 @@ public class ChooseAnswersFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-//        changeLabelListener.onChangeLabelGoneListener();
+        changeLabelListener.onChangeLabelGoneListener();
 
         backButtonListener.onBackButtonClickListener(false);
     }

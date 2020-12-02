@@ -370,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         if(flag) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            setSupportActionBar(toolbar);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -381,7 +380,6 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         else{
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
-            setSupportActionBar(toolbar);
         }
     }
 

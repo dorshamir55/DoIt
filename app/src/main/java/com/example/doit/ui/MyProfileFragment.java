@@ -96,6 +96,7 @@ public class MyProfileFragment extends Fragment {
                     @Override
                     public void apply(UserData currentUser) {
                         userData = currentUser;
+                        changeLabelListener.onChangeLabelTextListener(userData.getNickName());
                         votes.setText(String.valueOf(userData.getVotedQuestionPostsIdList().size()));
                         posts.setText(String.valueOf(userData.getPostedQuestionPostsIdList().size()));
                     }
@@ -250,18 +251,18 @@ public class MyProfileFragment extends Fragment {
         });
     }
 
-    public void showMyPosts(String userID){
-        new Handler().postDelayed(()-> {
-            Consumer<List<QuestionPostData>> consumerList = new Consumer<List<QuestionPostData>>() {
-                @Override
-                public void apply(List<QuestionPostData> result) {
-                    adapter.setData(result);
-                    adapter.notifyDataSetChanged();
-                }
-            };
-            viewModel.searchMyPostsAndRun(consumerList, userID);
-        }, 200);
-    }
+//    public void showMyPosts(String userID){
+//        new Handler().postDelayed(()-> {
+//            Consumer<List<QuestionPostData>> consumerList = new Consumer<List<QuestionPostData>>() {
+//                @Override
+//                public void apply(List<QuestionPostData> result) {
+//                    adapter.setData(result);
+//                    adapter.notifyDataSetChanged();
+//                }
+//            };
+//            viewModel.searchMyPostsAndRun(consumerList, userID);
+//        }, 200);
+//    }
 
     private void vote(QuestionPostData clickedPost, int answerVoted){
         votesClickListener.onVote(clickedPost.getId(), currentUser.getUid(), clickedPost.getAnswers(), answerVoted);
