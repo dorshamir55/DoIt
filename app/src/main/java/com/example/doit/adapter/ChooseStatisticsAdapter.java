@@ -1,37 +1,26 @@
 package com.example.doit.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.doit.R;
-import com.example.doit.model.SquareLayout;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.StorageReference;
+import com.example.doit.model.Statistic;
 
 import java.util.List;
 
 public class ChooseStatisticsAdapter extends RecyclerView.Adapter<ChooseStatisticsAdapter.PictureViewHolder> {
-    private List<String> statistics;
+    private List<Statistic> statistics;
     private Context context;
     private MyStatisticsListener listener;
 
 
     public interface MyStatisticsListener {
-        void onStatisticsClicked(int position, View view);
+        void onStatisticsClicked(int position, View view, Statistic statistic);
     }
 
     public void setListener(MyStatisticsListener listener) {
@@ -42,12 +31,11 @@ public class ChooseStatisticsAdapter extends RecyclerView.Adapter<ChooseStatisti
         this.context = context;
     }
 
-
-    public void setData(List<String> statistics) {
+    public void setData(List<Statistic> statistics) {
         this.statistics = statistics;
     }
 
-    public List<String> getData() {
+    public List<Statistic> getData() {
         return statistics;
     }
 
@@ -62,7 +50,7 @@ public class ChooseStatisticsAdapter extends RecyclerView.Adapter<ChooseStatisti
                 @Override
                 public void onClick(View v){
                     if(listener!=null)
-                        listener.onStatisticsClicked(getAdapterPosition(), v);
+                        listener.onStatisticsClicked(getAdapterPosition(), v, statistics.get(getAdapterPosition()));
                 }
             });
         }
@@ -79,7 +67,7 @@ public class ChooseStatisticsAdapter extends RecyclerView.Adapter<ChooseStatisti
     public void onBindViewHolder(PictureViewHolder holder, int position) {
         assert statistics != null;
 
-        holder.textView.setText(statistics.get(position));
+        holder.textView.setText(statistics.get(position).getTitle());
     }
 
     @Override

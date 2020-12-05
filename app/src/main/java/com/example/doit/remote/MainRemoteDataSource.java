@@ -26,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -108,15 +109,24 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
             @Override
             public void apply(List<QuestionFireStore> questionsList) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    List<QuestionFireStore> topQuestionsList;
                     questionsList.sort(Comparator.comparing(QuestionFireStore::getAmountOfChoices));
+                    Collections.reverse(questionsList);
                     int amountOfQuestionsInRange = topQuestion;
                     long maxOfChoicesOfLastQuestion;
-                    maxOfChoicesOfLastQuestion = questionsList.get(amountOfQuestionsInRange).getAmountOfChoices();
-                    while(maxOfChoicesOfLastQuestion == questionsList.get(amountOfQuestionsInRange - 1).getAmountOfChoices() && amountOfQuestionsInRange < questionsList.size()){
-                        amountOfQuestionsInRange++;
+                    if(amountOfQuestionsInRange >= questionsList.size()) {
+                        maxOfChoicesOfLastQuestion = questionsList.get(questionsList.size() - 1).getAmountOfChoices();
+                        topQuestionsList = questionsList;
+                    }
+                    else {
+                        maxOfChoicesOfLastQuestion = questionsList.get(amountOfQuestionsInRange).getAmountOfChoices();
+                        while(maxOfChoicesOfLastQuestion == questionsList.get(amountOfQuestionsInRange - 1).getAmountOfChoices() && amountOfQuestionsInRange < questionsList.size()) {
+                            amountOfQuestionsInRange++;
+                        }
+
+                        topQuestionsList = questionsList.subList(0, amountOfQuestionsInRange);
                     }
 
-                    List<QuestionFireStore> topQuestionsList = questionsList.subList(0, amountOfQuestionsInRange);
                     consumerList.apply(topQuestionsList);
                 }
             }
