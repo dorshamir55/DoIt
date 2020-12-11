@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.doit.R;
 import com.example.doit.model.AnswerFireStore;
 import com.example.doit.model.AnswerInPost;
+import com.example.doit.model.EndPostNotification;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionInPost;
 import com.example.doit.model.QuestionPostData;
@@ -39,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -58,6 +61,7 @@ public class UploadPostService extends Service
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private QuestionPostData data;
+    private String fcmToken = null;
     private List<String> postedQuestionPostsIdList;
 
     @Override
@@ -66,6 +70,11 @@ public class UploadPostService extends Service
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
+
+        MyFirebaseMessagingService.requestFCMToken()
+                .addOnSuccessListener(instanceIdResult -> {
+                    fcmToken = instanceIdResult.getToken();
+                });
     }
 
     @Override
@@ -104,8 +113,7 @@ public class UploadPostService extends Service
 
     private void postQuestion(QuestionPostData questionPostData) {
 
-        FirebaseFirestore.getInstance().collection("posts")
-                .add(questionPostData)
+        db.collection("posts").add(questionPostData)
                 .addOnSuccessListener(docRef -> {
                     LocalBroadcastManager.getInstance(getApplicationContext())
                             .sendBroadcast(new Intent("com.project.ACTION_RELOAD"));
@@ -113,6 +121,31 @@ public class UploadPostService extends Service
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
 
+                            if(currentUser == null || fcmToken == null) {
+                                return;
+                            }
+
+                            String questionText = questionPostData.getQuestion().getTextByLanguage("he");
+                            String postedUserId = questionPostData.getPostedUserId();
+                            String questionPostId = docRef.getId();
+                            Date endingPostDate = questionPostData.getEndingPostDate();
+
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("fcmToken", fcmToken);
+                            data.put("postedUserId", postedUserId);
+                            data.put("questionText", questionText);
+                            data.put("questionPostId", questionPostId);
+                            data.put("endingPostDate", endingPostDate);
+
+//                            EndPostNotification endPostNotification = new EndPostNotification(postedUserId, questionText, questionPostData.getEndingPostDate());
+//                            db.collection("notifications").document(docRef.getId()).set(endPostNotification)
+                            db.collection("notifications").document(docRef.getId()).set(data)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                        }
+                                    });
                             incrementQuestionChoice(questionPostData.getQuestion().getQuestionID());
                             updateUserQuestionPostsIdList(documentSnapshot.getId(), questionPostData.getPostedUserId());
                         }
@@ -151,12 +184,12 @@ public class UploadPostService extends Service
                         });
             }
         })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void incrementQuestionChoice(String questionID) {

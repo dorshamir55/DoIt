@@ -66,6 +66,7 @@ public class StatisticsMenuFragment extends Fragment {
                     String imagePath = null;
                     if(questionFireStore.getAmountOfChoices() < currentMaxChoices){
                         degree++;
+                        currentMaxChoices = questionFireStore.getAmountOfChoices();
                     }
                     if(degree == 1){
                         imagePath = String.valueOf(R.drawable.gold_medal);
@@ -83,7 +84,7 @@ public class StatisticsMenuFragment extends Fragment {
                 statistic1.setCompetitors(competitors);
             }
         };
-        viewModel.getTopQuestions(listConsumer, 5);
+        viewModel.getTopQuestions(listConsumer, 3);
 
         statistics.add(statistic1);
     }

@@ -112,15 +112,24 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                     List<QuestionFireStore> topQuestionsList;
                     questionsList.sort(Comparator.comparing(QuestionFireStore::getAmountOfChoices));
                     Collections.reverse(questionsList);
-                    int amountOfQuestionsInRange = topQuestion;
+                    int amountOfQuestionsInRange=0, topQuestionToDisplay = topQuestion;
                     long maxOfChoicesOfLastQuestion;
-                    if(amountOfQuestionsInRange >= questionsList.size()) {
+                    if(topQuestion >= questionsList.size()) {
                         maxOfChoicesOfLastQuestion = questionsList.get(questionsList.size() - 1).getAmountOfChoices();
                         topQuestionsList = questionsList;
                     }
                     else {
-                        maxOfChoicesOfLastQuestion = questionsList.get(amountOfQuestionsInRange).getAmountOfChoices();
-                        while(maxOfChoicesOfLastQuestion == questionsList.get(amountOfQuestionsInRange - 1).getAmountOfChoices() && amountOfQuestionsInRange < questionsList.size()) {
+                        maxOfChoicesOfLastQuestion = questionsList.get(topQuestionToDisplay).getAmountOfChoices();
+                        while(maxOfChoicesOfLastQuestion == questionsList.get(topQuestionToDisplay - 1).getAmountOfChoices() && topQuestionToDisplay < questionsList.size()) {
+                            topQuestionToDisplay++;
+                        }
+                        int questionListLength = questionsList.size();
+                        for(int i=0; i<questionListLength-1; i++)
+                        {
+                            if(topQuestionToDisplay == 0)
+                                break;
+                            if(questionsList.get(i).getAmountOfChoices() == questionsList.get(i+1).getAmountOfChoices())
+                                topQuestionToDisplay--;
                             amountOfQuestionsInRange++;
                         }
 

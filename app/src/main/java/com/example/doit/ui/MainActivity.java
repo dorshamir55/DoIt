@@ -15,12 +15,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,16 +47,21 @@ import com.example.doit.model.UserData;
 import com.example.doit.model.UserProfileListener;
 import com.example.doit.model.VotersClickListener;
 import com.example.doit.model.VotesClickListener;
+import com.example.doit.service.MyFirebaseMessagingService;
+import com.example.doit.service.NotificationService;
 import com.example.doit.viewmodel.IMainViewModel;
 import com.example.doit.viewmodel.MainViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.List;
@@ -199,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         viewModel.getCurrentUserData(currentUser.getUid(), userConsumer);
 
         // Check if FCM token was re-generated but the user auth uid couldn't be granted..
-        /*String newToken = PreferenceManager.getDefaultSharedPreferences(this)
+        String newToken = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString(MyFirebaseMessagingService.SP_TOKEN_KEY, null);
 
         if(newToken != null) {
@@ -209,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
                     .commit();
 
             MyFirebaseMessagingService.updateTokenInFirestore(getApplicationContext(), newToken);
-        }*/
+        }
     }
 
     private void replaceFragment (Fragment fragment){
@@ -252,6 +261,10 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         if(authStateListener != null)
             auth.removeAuthStateListener(authStateListener);
         isSignInNow = true;
+
+//        Intent intent = new Intent(this, NotificationService.class);
+//
+//        startService(intent);
     }
 
     @Override
@@ -259,6 +272,27 @@ public class MainActivity extends AppCompatActivity implements EditImageNickname
         super.onResume();
         auth.addAuthStateListener(authStateListener);
         isSignInNow = false;
+
+//        MyFirebaseMessagingService myFirebaseMessagingService = new MyFirebaseMessagingService();
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = token;
+                        Log.d("TAG", msg);
+//                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
