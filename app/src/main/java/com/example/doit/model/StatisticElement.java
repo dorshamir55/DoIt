@@ -7,11 +7,18 @@ import java.io.Serializable;
 
 public class StatisticElement implements Serializable {
     String titleElement;
-    String value;
+    long value;
     String stringImageUri;
     int position;
 
-    public StatisticElement(String titleElement, String value, String stringImageUri, int position) {
+    public StatisticElement(String titleElement, long value){
+        this.titleElement = titleElement;
+        this.value = value;
+        this.stringImageUri = null;
+        this.position = 0;
+    }
+
+    public StatisticElement(String titleElement, long value, String stringImageUri, int position) {
         this.titleElement = titleElement;
         this.value = value;
         this.stringImageUri = stringImageUri;
@@ -26,11 +33,11 @@ public class StatisticElement implements Serializable {
         this.titleElement = titleElement;
     }
 
-    public String getValue() {
+    public long getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(long value) {
         this.value = value;
     }
 
@@ -38,7 +45,7 @@ public class StatisticElement implements Serializable {
         return stringImageUri;
     }
 
-    public void setStringImageUri(String imageUri) {
+    public void setStringImageUri(String stringImageUri) {
         this.stringImageUri = stringImageUri;
     }
 

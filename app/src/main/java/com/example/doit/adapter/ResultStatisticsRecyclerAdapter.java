@@ -64,7 +64,7 @@ public class ResultStatisticsRecyclerAdapter extends RecyclerView.Adapter<Result
 
         holder.position.setText(String.valueOf(listData.get(position).getPosition()));
         holder.text.setText(listData.get(position).getTitleElement());
-        holder.value.setText(listData.get(position).getValue());
+        holder.value.setText(String.valueOf(listData.get(position).getValue()));
 
         Uri imageUri = Uri.parse(listData.get(position).getStringImageUri());
 

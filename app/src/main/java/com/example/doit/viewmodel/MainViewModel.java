@@ -15,6 +15,7 @@ import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.StatisticElement;
 import com.example.doit.model.UserData;
 import com.example.doit.repository.IMainRepository;
 import com.example.doit.repository.MainRepository;
@@ -62,6 +63,16 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     @Override
     public void getTopQuestions(Consumer<List<QuestionFireStore>> consumerList, int topQuestion) {
         mainRepository.getTopQuestions(consumerList, topQuestion);
+    }
+
+    @Override
+    public void getTopUsersInPosts(Consumer<List<UserData>> topUsersPostsConsumer, int topUsersPosts) {
+        mainRepository.getTopUsersInPosts(topUsersPostsConsumer, topUsersPosts);
+    }
+
+    @Override
+    public void getTopUsersInVotes(Consumer<List<UserData>> topUsersVotesConsumer, int topUsersVotes) {
+        mainRepository.getTopUsersInVotes(topUsersVotesConsumer, topUsersVotes);
     }
 
     @Override
@@ -131,5 +142,10 @@ public class MainViewModel extends AndroidViewModel implements IMainViewModel {
     @Override
     public void decrementVotesOfVoters(String questionPostID, List<AnswerInPost> answersInPost) {
         mainRepository.decrementVotesOfVoters(questionPostID, answersInPost);
+    }
+
+    @Override
+    public void prepareStatistics(Consumer<List<StatisticElement>> statisticConsumer, List<StatisticElement> data) {
+        mainRepository.prepareStatistics(statisticConsumer, data);
     }
 }

@@ -26,6 +26,7 @@ import com.example.doit.model.LocalHelper;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.Statistic;
 import com.example.doit.model.StatisticElement;
+import com.example.doit.model.UserData;
 import com.example.doit.model.UserProfileListener;
 import com.example.doit.model.VotersClickListener;
 import com.example.doit.model.VotesClickListener;
@@ -44,6 +45,8 @@ public class StatisticsMenuFragment extends Fragment {
     private LocalHelper localHelper;
     private String currentLanguage;
     private int topQuestion = 5;
+    private int topUsersPosts = 2;
+    private int topUsersVotes = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,42 +57,80 @@ public class StatisticsMenuFragment extends Fragment {
         this.localHelper = new LocalHelper(getActivity());
         this.currentLanguage = localHelper.getLocale();
         statistics = new ArrayList<>();
+
         String topQuestionTitle = getResources().getString(R.string.top_question);
         Statistic statistic1 = new Statistic(topQuestionTitle);
 
-        Consumer<List<QuestionFireStore>> listConsumer = new Consumer<List<QuestionFireStore>>() {
-            List<StatisticElement> competitors = null;
+        ///////////////
+        // Top questions
+        Consumer<List<QuestionFireStore>> topQuestionConsumer = new Consumer<List<QuestionFireStore>>() {
             @Override
             public void apply(List<QuestionFireStore> data) {
-                competitors = new ArrayList<>();
-                long currentMaxChoices = data.get(0).getAmountOfChoices();
-                int degree = 1;
-                for(QuestionFireStore questionFireStore : data) {
-                    String imagePath = null;
-                    if(questionFireStore.getAmountOfChoices() < currentMaxChoices){
-                        degree++;
-                        currentMaxChoices = questionFireStore.getAmountOfChoices();
-                    }
-                    if(degree == 1){
-                        imagePath = String.valueOf(R.drawable.gold_medal);
-                    }
-                    else if (degree == 2){
-                        imagePath = String.valueOf(R.drawable.silver_medal);
-                    }
-                    else if(degree == 3) {
-                        imagePath = String.valueOf(R.drawable.bronze_medal);
-                    }
-                    String stringImageUri = "android.resource://com.example.doit/" + imagePath;
-//                    Uri imageUri = Uri.parse("android.resource://com.example.doit/" + imagePath);
-                    StatisticElement statisticElement = new StatisticElement(questionFireStore.getTextByLanguage(currentLanguage), String.valueOf(questionFireStore.getAmountOfChoices()), stringImageUri, degree);
-                    competitors.add(statisticElement);
+                List<StatisticElement> statisticElements = new ArrayList<>();
+                for(QuestionFireStore questionFireStore : data){
+                    statisticElements.add(new StatisticElement(questionFireStore.getTextByLanguage(currentLanguage), questionFireStore.getAmountOfChoices()));
                 }
-                statistic1.setCompetitors(competitors);
+                Consumer<List<StatisticElement>> statisticConsumer1 = new Consumer<List<StatisticElement>>() {
+                    @Override
+                    public void apply(List<StatisticElement> competitors) {
+                        statistic1.setCompetitors(competitors);
+                    }
+                };
+                viewModel.prepareStatistics(statisticConsumer1, statisticElements);
             }
         };
-        viewModel.getTopQuestions(listConsumer, topQuestion);
+        viewModel.getTopQuestions(topQuestionConsumer, topQuestion);
+
+        /////////////////////
+        // Top users in posts
+        String topUsersWithTheMostPosts = getResources().getString(R.string.top_users_in_posts);
+        Statistic statistic2 = new Statistic(topUsersWithTheMostPosts);
+
+        Consumer<List<UserData>> topUsersPostsConsumer = new Consumer<List<UserData>>() {
+            @Override
+            public void apply(List<UserData> data) {
+                List<StatisticElement> statisticElements = new ArrayList<>();
+                for(UserData userData : data){
+                    statisticElements.add(new StatisticElement(userData.getNickName(), (long)userData.getAmountOfPostedQuestionPostsIdList()));
+                }
+                Consumer<List<StatisticElement>> statisticConsumer2 = new Consumer<List<StatisticElement>>() {
+                    @Override
+                    public void apply(List<StatisticElement> competitors) {
+                        statistic2.setCompetitors(competitors);
+                    }
+                };
+                viewModel.prepareStatistics(statisticConsumer2, statisticElements);
+            }
+        };
+        viewModel.getTopUsersInPosts(topUsersPostsConsumer, topUsersPosts);
+
+        /////////////////////
+        // Top users in votes
+        String topUsersWithTheMostVotes = getResources().getString(R.string.top_users_in_votes);
+        Statistic statistic3 = new Statistic(topUsersWithTheMostVotes);
+
+        Consumer<List<UserData>> topUsersVotesConsumer = new Consumer<List<UserData>>() {
+            @Override
+            public void apply(List<UserData> data) {
+                List<StatisticElement> statisticElements = new ArrayList<>();
+                for(UserData userData : data){
+                    statisticElements.add(new StatisticElement(userData.getNickName(), (long)userData.getAmountOfVotedQuestionPostsIdList()));
+                }
+                Consumer<List<StatisticElement>> statisticConsumer3 = new Consumer<List<StatisticElement>>() {
+                    @Override
+                    public void apply(List<StatisticElement> competitors) {
+                        statistic3.setCompetitors(competitors);
+                    }
+                };
+                viewModel.prepareStatistics(statisticConsumer3, statisticElements);
+            }
+        };
+        viewModel.getTopUsersInVotes(topUsersVotesConsumer, topUsersVotes);
+
 
         statistics.add(statistic1);
+        statistics.add(statistic2);
+        statistics.add(statistic3);
     }
 
     @Override

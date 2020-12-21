@@ -8,12 +8,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.doit.R;
 import com.example.doit.model.AnswerFireStore;
 import com.example.doit.model.AnswerInPost;
 import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.StatisticElement;
 import com.example.doit.model.UserData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -103,7 +105,35 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
                         consumerList.apply(data);
                 });
     }
+    public void prepareStatistics(Consumer<List<StatisticElement>> consumerList, List<StatisticElement> statisticElements){
+        List<StatisticElement>competitors = new ArrayList<>();
+        long currentMaxChoices = statisticElements.get(0).getValue();
+        int degree = 1;
+        for(StatisticElement statisticElement : statisticElements) {
+            String imagePath = null;
+            if(statisticElement.getValue() < currentMaxChoices){
+                degree++;
+                currentMaxChoices = statisticElement.getValue();
+            }
+            if(degree == 1){
+                imagePath = String.valueOf(R.drawable.gold_medal);
+            }
+            else if (degree == 2){
+                imagePath = String.valueOf(R.drawable.silver_medal);
+            }
+            else if(degree == 3) {
+                imagePath = String.valueOf(R.drawable.bronze_medal);
+            }
+            String stringImageUri = "android.resource://com.example.doit/" + imagePath;
+//                    Uri imageUri = Uri.parse("android.resource://com.example.doit/" + imagePath);
+//            StatisticElement statisticElement = new StatisticElement(questionFireStore.getTextByLanguage(currentLanguage), String.valueOf(questionFireStore.getAmountOfChoices()), stringImageUri, degree);
+            statisticElement.setStringImageUri(stringImageUri);
+            statisticElement.setPosition(degree);
+            competitors.add(statisticElement);
+        }
 
+        consumerList.apply(competitors);
+    }
     public void fetchTopQuestions(Consumer<List<QuestionFireStore>> consumerList, int topQuestion) {
         Consumer<List<QuestionFireStore>> consumer = new Consumer<List<QuestionFireStore>>() {
             @Override
@@ -144,6 +174,92 @@ public class MainRemoteDataSource implements IMainRemoteDataSource {
         };
 
         fetchAllQuestions(consumer);
+    }
+
+    @Override
+    public void fetchTopUsersInPosts(Consumer<List<UserData>> topUsersPostsConsumer, int topUsersPosts) {
+        Consumer<List<UserData>> consumer = new Consumer<List<UserData>>() {
+            @Override
+            public void apply(List<UserData> usersList) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    List<UserData> topUsersList;
+                    usersList.sort(Comparator.comparing(UserData::getAmountOfPostedQuestionPostsIdList));
+                    Collections.reverse(usersList);
+                    int amountOfUsersInRange = 1, topQuestionToDisplay = topUsersPosts;
+                    long differentAmountOfLastUser = 1;
+                    if(topUsersPosts >= usersList.size()) {
+                        topUsersList = usersList;
+                    }
+                    else
+                    {
+                        while(amountOfUsersInRange < usersList.size() && differentAmountOfLastUser < topUsersPosts)
+                        {
+                            if(usersList.get(amountOfUsersInRange-1).getAmountOfPostedQuestionPostsIdList() > usersList.get(amountOfUsersInRange).getAmountOfPostedQuestionPostsIdList())
+                                differentAmountOfLastUser++;
+                            amountOfUsersInRange++;
+                        }
+
+                        if(differentAmountOfLastUser >= topUsersPosts && amountOfUsersInRange < usersList.size()) {
+                            while (usersList.get(amountOfUsersInRange-1).getAmountOfPostedQuestionPostsIdList() == usersList.get(amountOfUsersInRange).getAmountOfPostedQuestionPostsIdList())
+                            {
+                                amountOfUsersInRange++;
+                                if(amountOfUsersInRange >= usersList.size())
+                                    break;
+                            }
+                        }
+
+                        topUsersList = usersList.subList(0, amountOfUsersInRange);
+                    }
+
+                    topUsersPostsConsumer.apply(topUsersList);
+                }
+            }
+        };
+
+        fetchAllUsers(consumer);
+    }
+
+    @Override
+    public void fetchTopUsersInVotes(Consumer<List<UserData>> topUsersVotesConsumer, int topUsersVotes) {
+        Consumer<List<UserData>> consumer = new Consumer<List<UserData>>() {
+            @Override
+            public void apply(List<UserData> usersList) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    List<UserData> topUsersList;
+                    usersList.sort(Comparator.comparing(UserData::getAmountOfVotedQuestionPostsIdList));
+                    Collections.reverse(usersList);
+                    int amountOfUsersInRange = 1, topQuestionToDisplay = topUsersVotes;
+                    long differentAmountOfLastUser = 1;
+                    if(topUsersVotes >= usersList.size()) {
+                        topUsersList = usersList;
+                    }
+                    else
+                    {
+                        while(amountOfUsersInRange < usersList.size() && differentAmountOfLastUser < topUsersVotes)
+                        {
+                            if(usersList.get(amountOfUsersInRange-1).getAmountOfVotedQuestionPostsIdList() > usersList.get(amountOfUsersInRange).getAmountOfVotedQuestionPostsIdList())
+                                differentAmountOfLastUser++;
+                            amountOfUsersInRange++;
+                        }
+
+                        if(differentAmountOfLastUser >= topUsersVotes && amountOfUsersInRange < usersList.size()) {
+                            while (usersList.get(amountOfUsersInRange-1).getAmountOfVotedQuestionPostsIdList() == usersList.get(amountOfUsersInRange).getAmountOfVotedQuestionPostsIdList())
+                            {
+                                amountOfUsersInRange++;
+                                if(amountOfUsersInRange >= usersList.size())
+                                    break;
+                            }
+                        }
+
+                        topUsersList = usersList.subList(0, amountOfUsersInRange);
+                    }
+
+                    topUsersVotesConsumer.apply(topUsersList);
+                }
+            }
+        };
+
+        fetchAllUsers(consumer);
     }
 
     @Override

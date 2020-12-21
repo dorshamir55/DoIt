@@ -76,5 +76,6 @@
     <string name="upload_post">העלה פוסט</string>
     <string name="voters">מצביעים</string>
     <string name="top_question">שאלות - 5 הגדולים</string>
-    <string name="top">הגדולים</string>
+    <string name="top_users_in_posts">משתמשים מובילים - בפוסטים</string>
+    <string name="top_users_in_votes">משתמשים מובילים - בהצבעות</string>
 </resources>

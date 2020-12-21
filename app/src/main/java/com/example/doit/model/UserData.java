@@ -87,5 +87,13 @@ public class UserData implements Serializable {
     public void setPostedQuestionPostsIdList(List<String> postedQuestionPostsIdList) {
         this.postedQuestionPostsIdList = postedQuestionPostsIdList;
     }
+
+    public int getAmountOfPostedQuestionPostsIdList(){
+        return postedQuestionPostsIdList.size();
+    }
+
+    public int getAmountOfVotedQuestionPostsIdList(){
+        return votedQuestionPostsIdList.size();
+    }
 }
 

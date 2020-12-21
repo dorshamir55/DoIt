@@ -20,6 +20,7 @@
             android:layout_gravity="center"
             android:drawableStart="@drawable/ic_facebook"
             android:padding="15dp"
+            android:visibility="gone"
             android:text="@string/continue_with_facebook"/>
 
         <com.google.android.gms.common.SignInButton

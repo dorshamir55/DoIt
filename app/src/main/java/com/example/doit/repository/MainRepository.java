@@ -15,6 +15,7 @@ import com.example.doit.model.AnswerInQuestion;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.QuestionFireStore;
 import com.example.doit.model.QuestionPostData;
+import com.example.doit.model.StatisticElement;
 import com.example.doit.model.UserData;
 import com.example.doit.remote.IMainRemoteDataSource;
 import com.example.doit.remote.MainRemoteDataSource;
@@ -99,6 +100,16 @@ public class MainRepository implements IMainRepository{
     }
 
     @Override
+    public void getTopUsersInPosts(Consumer<List<UserData>> topUsersPostsConsumer, int topUsersPosts) {
+        remoteDataSource.fetchTopUsersInPosts(topUsersPostsConsumer, topUsersPosts);
+    }
+
+    @Override
+    public void getTopUsersInVotes(Consumer<List<UserData>> topUsersVotesConsumer, int topUsersVotes) {
+        remoteDataSource.fetchTopUsersInVotes(topUsersVotesConsumer, topUsersVotes);
+    }
+
+    @Override
     public void getListOfAnswers(Consumer<List<AnswerFireStore>> consumerList, List<AnswerInQuestion> answerInQuestions) {
         remoteDataSource.fetchAnswers(consumerList, answerInQuestions);
     }
@@ -165,6 +176,11 @@ public class MainRepository implements IMainRepository{
     @Override
     public void decrementVotesOfVoters(String questionPostID, List<AnswerInPost> answersInPost) {
         remoteDataSource.decrementVotesOfVoters(questionPostID, answersInPost);
+    }
+
+    @Override
+    public void prepareStatistics(Consumer<List<StatisticElement>> statisticConsumer, List<StatisticElement> data) {
+        remoteDataSource.prepareStatistics(statisticConsumer, data);
     }
 
     private void doAsynch(Runnable task) {

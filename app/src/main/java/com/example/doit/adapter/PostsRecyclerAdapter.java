@@ -454,8 +454,8 @@ public class PostsRecyclerAdapter extends RecyclerView.Adapter<PostsRecyclerAdap
                 viewModel.stopPosting(id);
 //                Toast.makeText(activity, String.valueOf(i++), Toast.LENGTH_LONG).show();
 
-                List<String> winners = listData.get(position).calculateWinningAnswerID();
-                viewModel.incrementAnswerWins(listData.get(position).getQuestion().getQuestionID(), winners);
+//                List<String> winners = listData.get(position).calculateWinningAnswerID();
+//                viewModel.incrementAnswerWins(listData.get(position).getQuestion().getQuestionID(), winners);
             }
         }
 
