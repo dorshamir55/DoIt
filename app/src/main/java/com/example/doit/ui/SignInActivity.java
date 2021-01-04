@@ -5,11 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.doit.R;
+import com.example.doit.model.ChangeLabelListener;
 import com.example.doit.model.Consumer;
 import com.example.doit.model.EditImageNicknameListener;
 import com.example.doit.model.UserData;
@@ -36,21 +40,26 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class SignInActivity extends AppCompatActivity
-        implements GoogleFacebookLoginFragment.GoogleFacebookLoginFragmentClickListener, EditImageNicknameListener {
+        implements GoogleFacebookLoginFragment.GoogleFacebookLoginFragmentClickListener, EditImageNicknameListener,
+        ChangeLabelListener {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private GoogleSignInClient mGoogleSignInClient;
     private UserData userData;
     private final int RC_SIGN_IN = 1;
+    private Toolbar toolbar;
+    private TextView toolbarTitleTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        toolbarTitleTV = findViewById(R.id.toolbar_title_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -222,5 +231,23 @@ public class SignInActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public void onChangeLabelVisibleListener() {
+        toolbar.setTitleTextColor(Color.BLACK);
+        toolbarTitleTV.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onChangeLabelGoneListener() {
+        toolbar.setTitleTextColor(Color.WHITE);
+        getSupportActionBar().setTitle("");
+        toolbarTitleTV.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onChangeLabelTextListener(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }
