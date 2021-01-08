@@ -32,7 +32,7 @@
                         android:layout_height="150dp"
                         android:layout_gravity="center"
                         app:civ_border_width="2dp"
-                        app:civ_border_color="@color/toolbarColor"
+                        app:civ_border_color="@color/toolbarColorLight"
                         android:layout_marginBottom="10dp"
                         tools:ignore="MissingConstraints" />
                     <LinearLayout
@@ -73,6 +73,7 @@
                             android:layout_gravity="center"
                             android:textSize="20sp"
                             android:textStyle="bold"
+                            android:fontFamily="@font/bubblegum_sans"
                             android:textColor="@color/toolbarColor"
                             android:layout_marginBottom="5dp"/>
                         <TextView
@@ -81,6 +82,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textSize="16sp"
+                            android:fontFamily="@font/bubblegum_sans"
                             android:textColor="@color/toolbarColorLight2"
                             android:text="@string/posts"/>
                     </LinearLayout>
@@ -95,6 +97,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textSize="20sp"
+                            android:fontFamily="@font/bubblegum_sans"
                             android:textStyle="bold"
                             android:textColor="@color/toolbarColor"
                             android:layout_marginBottom="5dp"/>
@@ -104,6 +107,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:textSize="16sp"
+                            android:fontFamily="@font/bubblegum_sans"
                             android:textColor="@color/toolbarColorLight2"
                             android:text="@string/votes"/>
                     </LinearLayout>
