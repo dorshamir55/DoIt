@@ -11,8 +11,8 @@ Included: Fragments, MVVM Architecture, ViewModel, Repository, LiveData, FireBas
 ## Screenshots:
 ![Opening screen](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Opening_screen.jpg)
 ![Gmail login](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Gmail_login.jpg)
---<br>
-
+--
+<br>
 ![Home](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Home.jpg)
 ![Home2](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Home2.jpg)
 --
