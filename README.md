@@ -7,7 +7,7 @@ Sport news & weather in your location.
 Included: Volley, Sensors, RecyclerView, Fragments, Services, Alarm manager, Notifications, BroadcastReceiver.
 
 ## Screenshots:
-![Opening screen](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Opening_screen.jpg)__________
+![Opening screen](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Opening_screen.jpg)<br />
 ![Gmail login](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Gmail_login.jpg)
 <hr>
 ![Home](https://github.com/Dorshamir55/DoIt/raw/master/ScreenShots/Home.jpg)__________
